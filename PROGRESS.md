@@ -203,7 +203,7 @@ Git 저장소는 `main`으로 초기화했고, 공개 전 검사를 통과한 �
 | S5 회귀 | 통과 |
 | 배분 엔진 회귀 | 40/40 |
 
-실제 Vercel Blob 공유는 사용자 계정 로그인과 `BLOB_READ_WRITE_TOKEN` 연결 전이므로 미실행이다. 상세 근거는 [교안_36쪽_실행검증.md](교안_36쪽_실행검증.md)에 기록했다.
+Vercel Blob private 저장소와 `BLOB_READ_WRITE_TOKEN`을 연결하고 Production을 재배포했다. 상세 근거는 [교안_36쪽_실행검증.md](교안_36쪽_실행검증.md)에 기록했다.
 
 ## 12. 교안 37-1 GitHub·Vercel 완전 배포
 
@@ -220,17 +220,27 @@ Git 저장소는 `main`으로 초기화했고, 공개 전 검사를 통과한 �
 
 ### Vercel 화면 체크리스트
 
-- [ ] vercel.com → Add New → Project
-- [ ] GitHub의 `parliament-request-workflow` 저장소 Import
-- [ ] Framework Preset: `Other`
-- [ ] 저장소 전체를 배포하고 `vercel.json` 적용 확인
-- [ ] Deploy
-- [ ] 프로젝트 → Storage → Create Database → Blob
-- [ ] 접근 방식은 운영 보안정책에 따라 선택하고 프로젝트에 연결
-- [ ] Settings → Environment Variables에 `BLOB_READ_WRITE_TOKEN` 생성 확인
-- [ ] Deployments → 최신 배포 → Redeploy
-- [ ] `https://<프로젝트>.vercel.app/web/assign.html`에서 `Vercel 공유 저장` 표시 확인
-- [ ] 브라우저 두 개에서 배분→현업 회신→회신완료 상태 공유 확인
-- [ ] Blob에 `cases.json` 생성 확인
+- [x] vercel.com → Add New → Project
+- [x] GitHub의 `parliament-request-workflow` 저장소 Import
+- [x] Framework Preset: `Other`
+- [x] 저장소 전체를 배포하고 `vercel.json` 적용 확인
+- [x] Production Deploy
+- [x] 프로젝트 → Storage → Create Database → Blob
+- [x] Private 접근 방식으로 프로젝트 연결
+- [x] `BLOB_READ_WRITE_TOKEN` 생성 확인
+- [x] Deployments → 최신 배포 → Redeploy
+- [x] 운영 API에서 `Vercel Blob 공유 저장` 확인
+- [x] Edge·Chrome 독립 요청에서 동일 처리 단계 확인
+- [x] Blob의 `cases.json` 읽기·쓰기 확인
 
-배포 주소와 두 브라우저 공유 결과는 실제 배포 후 이 절에 기록한다.
+### 완전 배포 GATE 결과
+
+- 운영 화면: `https://parliament-request-workflow.vercel.app/web/assign.html`
+- API: `https://parliament-request-workflow.vercel.app/api/app`
+- 화면 HTTP: `200`
+- API HTTP: `200`
+- 시험 문항: `gate-37-1`(가상 자료)
+- 처리 이력: `접수 → 배분 → 회신`
+- Edge 확인 상태: `회신완료`, 주관 `기획재정담당관`
+- Chrome 확인 상태: `회신완료`, 주관 `기획재정담당관`
+- 판정: **통과 — 두 독립 브라우저 요청이 같은 처리 단계를 봄**
