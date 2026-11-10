@@ -170,12 +170,13 @@
 | 브라우저 콘솔 오류 | 0건 |
 | 비밀값 검사 | 0건 |
 
-Git 저장소는 `main`으로 초기화하고 공개 안전 파일 70개(약 1.82MB)를 스테이징했다. Git 작성자 이름·noreply 이메일, GitHub 로그인과 원격 저장소가 없으므로 첫 커밋·push·Pages 주소 발급은 보류했다. 배포 주소는 현재 **미발급**이다. 상세 내용은 [교안_34-35쪽_실행검증.md](교안_34-35쪽_실행검증.md)에 기록한다.
+Git 저장소는 `main`으로 초기화했고, 공개 전 검사를 통과한 파일을 GitHub 공개 저장소에 push했다. GitHub에서 먼저 만든 README와 로컬 이력은 강제 덮어쓰기 없이 병합했다. GitHub Pages 주소는 아직 **미발급**이다. 상세 내용은 [교안_34-35쪽_실행검증.md](교안_34-35쪽_실행검증.md)에 기록한다.
 
 ### 배포 주소
 
-- 현재 상태: **미발급**(GitHub 로그인·공개 저장소 생성 전)
-- 발급 후 기록할 주소: `https://<사용자명>.github.io/<저장소명>/web/assign.html`
+- GitHub 저장소: `https://github.com/kwon7890-alt/parliament-request-workflow`
+- GitHub Pages 상태: **미발급**(Pages 설정 전)
+- 발급 후 주소: `https://kwon7890-alt.github.io/parliament-request-workflow/web/assign.html`
 - 주소가 생기기 전에는 임의 주소를 완료 주소로 기록하지 않는다.
 
 ## 11. 교안 36쪽 S6 기록 공유·과거 이력
@@ -209,11 +210,13 @@ Git 저장소는 `main`으로 초기화하고 공개 안전 파일 70개(약 1.8
 ### GitHub
 
 - 계정: `kwon7890-alt`
-- 예정 저장소: `https://github.com/kwon7890-alt/parliament-request-workflow`
+- 공개 저장소: `https://github.com/kwon7890-alt/parliament-request-workflow`
 - 공개 전 검사: [GitHub_공개전_검사표.md](GitHub_공개전_검사표.md) 통과
-- 저장소 생성: GitHub 연결이 읽기 전용이라 403. 사용자가 GitHub `New repository` 화면에서 직접 생성 필요
-- 첫 커밋: 준비 중
-- push: 저장소 생성 후 실행
+- 저장소 생성: 완료(Public)
+- 로컬 첫 커밋: `8fd3f4c` (`S6 서버 함수`)
+- GitHub README 병합: 완료, 강제 push 없음
+- 첫 push: 완료(`main`, 병합 시점 `65ff1a7`)
+- 추적 파일: 93개(공식 빈 HWP 양식 2종과 `.agents/skills` 7개 포함)
 
 ### Vercel 화면 체크리스트
 
