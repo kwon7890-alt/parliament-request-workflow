@@ -271,3 +271,13 @@ Vercel Blob private 저장소와 `BLOB_READ_WRITE_TOKEN`을 연결하고 Product
 - 접수·배분: `https://parliament-request-workflow.vercel.app/web/assign.html`
 - API: `https://parliament-request-workflow.vercel.app/api/app`
 - GitHub: `https://github.com/kwon7890-alt/parliament-request-workflow`
+
+## 15. 교안 37-1 최종 재검증
+
+- 2026-11-10 현재 로컬 시험 전체를 다시 실행했다.
+- 배분 엔진 40/40, API 13개, PDF 78문항, S5·S6 브라우저 시험을 모두 통과했다.
+- Edge와 Chrome이 운영 주소에서 `gate-37-1`의 `회신완료` 상태와 같은 이력을 읽었다.
+- 실자료 네 폴더를 `.gitignore`에 추가해 향후 일괄 추가 시에도 공개되지 않게 보완했다.
+- 판정: **37-1 GATE 통과, 확인된 미완료 항목 없음.**
+
+상세 근거는 [교안_37-1_최종검증.md](교안_37-1_최종검증.md)에 기록했다.
