@@ -17,7 +17,7 @@
       <div class="panel-head"><div><h2>① 접수</h2><p>원문 PDF는 브라우저 안에서 읽으며 수신·보좌관·연락처는 저장하지 않습니다.</p></div><button class="btn danger small" id="resetAll" type="button">브라우저 기록 초기화</button></div>
       <div class="inputs">
         <div class="field"><label for="pdfFiles">자료요구서 PDF 여러 개</label><div class="file"><input id="pdfFiles" type="file" accept="application/pdf,.pdf" multiple></div></div>
-        <div class="field"><label for="csvFile">또는 문항목록.csv</label><div class="file"><input id="csvFile" type="file" accept=".csv,text/csv"></div></div>
+        <div class="field"><label for="csvFile">또는 문항목록 CSV·엑셀</label><div class="file"><input id="csvFile" type="file" accept=".csv,.xlsx,.xls,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"></div></div>
         <button class="btn" id="register" type="button" disabled>접수 등록</button>
       </div>
       <div class="progress" id="progress"><div class="track"><div class="bar" id="progressBar"></div></div><span class="progress-number" id="progressNumber">0%</span></div>
@@ -26,10 +26,12 @@
     </section>
 
     <section class="panel" data-reveal>
-      <div class="toolbar"><div><h2>② 배분</h2><p>1순위를 기본값으로 제시하되 담당자가 수정할 수 있습니다. <span class="status" id="storageMode">저장 방식 확인 중</span></p></div><div class="filters"><select id="statusFilter" class="filter" aria-label="상태 필터"><option value="">전체 상태</option><option value="접수">접수</option><option value="배분확정">배분확정</option><option value="회신중">회신중</option><option value="회신완료">회신완료</option><option value="재배정요청">재배정요청</option></select><input id="textFilter" class="filter" type="search" placeholder="의원·요구내용 검색" aria-label="문항 검색"><button class="btn danger small" id="resetCases" type="button">전체 초기화</button></div></div>
+      <div class="toolbar"><div><h2>② 배분</h2><p>1순위를 기본값으로 제시하되 담당자가 수정할 수 있습니다. <span class="status" id="storageMode">저장 방식 확인 중</span></p></div><div class="filters"><select id="statusFilter" class="filter" aria-label="상태 필터"><option value="">전체 상태</option><option value="접수">접수</option><option value="배분확정">배분확정</option><option value="회신중">회신중</option><option value="회신완료">회신완료</option><option value="재배정요청">재배정요청</option></select><input id="textFilter" class="filter" type="search" placeholder="의원·요구내용 검색" aria-label="문항 검색"><button class="btn secondary small" id="exportXlsx" type="button">현황 엑셀 저장</button><button class="btn danger small" id="resetCases" type="button">전체 초기화</button></div></div>
       <div class="table-wrap"><table class="cases"><thead><tr><th>상태</th><th>의원·문항</th><th>요구내용</th><th>후보 3순위</th><th>주관 과</th><th>협조 과</th><th>확정</th></tr></thead><tbody id="caseRows"></tbody></table></div>
     </section>
   </main>
+  <script src="lib/papaparse.min.js"></script>
+  <script src="lib/xlsx.full.min.js"></script>
   <script src="common.js"></script>
   <script src="split.js"></script>
   <script src="engine.js"></script>
@@ -85,10 +87,14 @@
     $("#csvFile").addEventListener("change", async (event) => {
       try {
         const file = event.target.files[0]; if (!file) return;
-        staging = AppCommon.parseCsv(await file.text());
+        if (/\.xlsx?$/i.test(file.name)) {
+          const workbook = XLSX.read(await file.arrayBuffer(), { type: "array", cellDates: false });
+          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          staging = XLSX.utils.sheet_to_json(sheet, { defval: "", raw: false });
+        } else staging = AppCommon.parseCsv(await file.text());
         const required = ["파일명","위원회","의원","제출기한","문항번호","요구내용","세부항목","비고"];
-        if (!staging.length || required.some((key) => !(key in staging[0]))) throw new Error("문항목록 CSV의 열이 맞지 않습니다.");
-        $("#splitSummary").innerHTML = ""; $("#register").disabled = false; notice(`CSV에서 ${staging.length}문항을 확인했습니다.`);
+        if (!staging.length || required.some((key) => !(key in staging[0]))) throw new Error("문항목록 CSV·엑셀의 열이 맞지 않습니다.");
+        $("#splitSummary").innerHTML = ""; $("#register").disabled = false; notice(`${/\.xlsx?$/i.test(file.name) ? "엑셀" : "CSV"}에서 ${staging.length}문항을 확인했습니다.`);
       } catch (error) { staging = []; $("#register").disabled = true; notice(error.message, true); }
     });
 
@@ -122,6 +128,20 @@
     }
 
     $("#statusFilter").addEventListener("change", renderCases); $("#textFilter").addEventListener("input", renderCases);
+    $("#exportXlsx").addEventListener("click", async () => {
+      const cases = await ApiClient.getCases();
+      const rows = cases.map((item) => ({
+        상태: item.status, 위원회: item.committee, 의원: item.member,
+        문항번호: item.questionNumber, 요구내용: item.requirement,
+        제출기한: item.dueDate, 주관과: item.leadDepartment,
+        협조과: (item.supportDepartments || []).join(" | "),
+      }));
+      const workbook = XLSX.utils.book_new();
+      const sheet = XLSX.utils.json_to_sheet(rows);
+      XLSX.utils.book_append_sheet(workbook, sheet, "처리현황");
+      XLSX.writeFile(workbook, "0000청_외통위_요구자료_처리현황.xlsx");
+      notice(`처리 현황 ${rows.length}건을 엑셀로 저장했습니다.`);
+    });
     $("#caseRows").addEventListener("click", async (event) => {
       const button = event.target.closest("button.confirm");
       if (!button) return;

@@ -39,9 +39,13 @@ const { chromium } = require("playwright");
     localCases: await page.evaluate(() => JSON.parse(localStorage.getItem("parliament-cases-v03") || "[]").length),
     currentNavTag,
     resetButtons,
+    csvLibrary: await page.evaluate(() => typeof Papa),
+    excelLibrary: await page.evaluate(() => typeof XLSX),
     confirmReloaded: urlBeforeConfirm !== urlAfterConfirm,
     consoleErrors: errors,
   };
+  const [download] = await Promise.all([page.waitForEvent("download"), page.click("#exportXlsx")]);
+  result.exportFile = download.suggestedFilename();
   fs.mkdirSync(path.join(__dirname, "검증결과"), { recursive: true });
   await page.screenshot({ path: path.join(__dirname, "검증결과", "S5_배분화면_78건_2건확정.png"), fullPage: true });
   page.once("dialog", (dialog) => dialog.accept());
@@ -51,5 +55,5 @@ const { chromium } = require("playwright");
   result.storageAfterReset = await page.evaluate(() => localStorage.getItem("parliament-cases-v03"));
   console.log(JSON.stringify(result, null, 2));
   await browser.close();
-  if (result.summaryRows !== 3 || result.total !== 78 || result.received !== 76 || result.assigned !== 2 || result.localCases !== 78 || result.currentNavTag !== "SPAN" || result.resetButtons !== 2 || result.confirmReloaded || result.afterReset !== 0 || result.storageAfterReset !== null || result.consoleErrors.length) process.exit(1);
+  if (result.summaryRows !== 3 || result.total !== 78 || result.received !== 76 || result.assigned !== 2 || result.localCases !== 78 || result.currentNavTag !== "SPAN" || result.resetButtons !== 2 || result.csvLibrary !== "object" || result.excelLibrary !== "object" || result.exportFile !== "0000청_외통위_요구자료_처리현황.xlsx" || result.confirmReloaded || result.afterReset !== 0 || result.storageAfterReset !== null || result.consoleErrors.length) process.exit(1);
 })().catch((error) => { console.error(error); process.exit(1); });

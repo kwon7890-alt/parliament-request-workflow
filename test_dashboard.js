@@ -18,6 +18,8 @@ const { chromium } = require("playwright");
     committeeHeading: await page.locator(".committee-hero h1").innerText(),
     members: await page.locator(".member").count(),
     workflowLinks: await page.locator(".work-links > a").count(),
+    chartLibrary: await page.evaluate(() => typeof Chart),
+    chartCanvas: await page.locator("#statusChart").count(),
     mode: await page.locator("#mode").textContent(),
     errors,
   };
@@ -28,6 +30,6 @@ const { chromium } = require("playwright");
   result.mobileOverflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
   await page.screenshot({ path: path.join(__dirname, "검증결과", "외통위_메인화면_모바일.png"), fullPage: true });
   await browser.close();
-  if (result.agency !== "0000청" || !result.committeeHeading.includes("외교통일위원회") || result.members !== 8 || result.workflowLinks !== 3 || result.mobileOverflow || result.errors.length) throw new Error(JSON.stringify(result));
+  if (result.agency !== "0000청" || !result.committeeHeading.includes("외교통일위원회") || result.members !== 8 || result.workflowLinks !== 3 || result.chartLibrary !== "function" || result.chartCanvas !== 1 || result.mobileOverflow || result.errors.length) throw new Error(JSON.stringify(result));
   console.log(JSON.stringify(result, null, 2));
 })().catch((error) => { console.error(error); process.exitCode = 1; });

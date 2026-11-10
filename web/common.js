@@ -10,6 +10,15 @@
 
   function parseCsv(text) {
     const source = String(text ?? "").replace(/^\uFEFF/, "");
+    if (typeof globalThis !== "undefined" && globalThis.Papa) {
+      const parsed = globalThis.Papa.parse(source, {
+        header: true,
+        skipEmptyLines: "greedy",
+        transformHeader: (header) => header.trim(),
+      });
+      if (parsed.errors.length) throw new Error(`CSV 해석 오류: ${parsed.errors[0].message}`);
+      return parsed.data;
+    }
     const grid = [];
     let row = [], field = "", quoted = false;
     for (let index = 0; index < source.length; index += 1) {

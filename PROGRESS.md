@@ -256,3 +256,18 @@ Vercel Blob private 저장소와 `BLOB_READ_WRITE_TOKEN`을 연결하고 Product
 - 메인 화면 데스크톱·모바일, S5·S6 회귀, 배분 엔진 40건을 모두 통과했다.
 
 상세 근거는 [디자인_업그레이드_검증.md](디자인_업그레이드_검증.md)에 기록했다.
+
+## 14. JavaScript 보강·Vercel 현행 배포
+
+- 강사 제시 목록을 대조해 Papa Parse, SheetJS, Chart.js, pdf.js를 실제 기능에 연결했다.
+- CSV 안전 해석, 문항목록 엑셀 읽기, 처리 현황 엑셀 저장, 메인 현황 차트를 검증했다.
+- Fuse.js는 설명 가능한 규칙 배분을 흐리지 않기 위해, Tabulator는 현 상태 전이 표의 회귀 위험 때문에 사용하지 않았다.
+- 비밀키·이메일·전화번호·기관 실명·실제 원문·회신 파일 공개 여부를 다시 검사했다.
+- 상세 검사표: [배포전_안전검사_20261110.md](배포전_안전검사_20261110.md)
+
+### 현재 운영 주소
+
+- 메인: `https://parliament-request-workflow.vercel.app/web/index.html`
+- 접수·배분: `https://parliament-request-workflow.vercel.app/web/assign.html`
+- API: `https://parliament-request-workflow.vercel.app/api/app`
+- GitHub: `https://github.com/kwon7890-alt/parliament-request-workflow`
