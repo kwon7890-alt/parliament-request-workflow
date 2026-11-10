@@ -21,3 +21,16 @@
 @media(max-width:950px){.globe3d{opacity:.55}}
 @media(max-width:560px){.committee-hero{min-height:0}.globe3d{opacity:.35}.spatial-label{letter-spacing:.08em}}
 @media(prefers-reduced-motion:reduce){.pulse-card{transform:none!important;will-change:auto}.globe3d{opacity:.58}}
+
+/* 관계 기반 ISSUE ONTOLOGY */
+.ontology-layout{grid-template-columns:minmax(280px,.62fr) minmax(560px,1.38fr)}
+.ontology-panel{overflow:hidden;background:linear-gradient(145deg,#fff,#f6f9ff)}
+.ontology-panel .panel-head>div{max-width:680px}.ontology-panel .panel-head p:not(.section-kicker){margin:7px 0 0;font-size:.82rem}
+.ontology-legend{display:flex;gap:7px 12px;flex-wrap:wrap;margin:13px 0 10px}.ontology-legend span{display:inline-flex;align-items:center;gap:5px;color:#66728a;font-size:.7rem;font-weight:800}.ontology-legend i{width:8px;height:8px;border-radius:3px;background:#f3b83f}.ontology-legend .actor{background:#8ca9ff}.ontology-legend .workflow{background:#50d0ca}.ontology-legend .issue{background:#bd8cff}.ontology-legend .guard{background:#ff8b93}.ontology-legend .ai{background:#6ee09d}
+.ontology-stage{position:relative;height:400px;overflow:hidden;border:1px solid #d8e1f1;border-radius:17px;background:radial-gradient(circle at 50% 45%,#edf4ff,transparent 48%),linear-gradient(rgba(35,86,216,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(35,86,216,.035) 1px,transparent 1px),#fbfdff;background-size:auto,24px 24px,24px 24px,auto;box-shadow:inset 0 1px #fff}
+#ontologyGraph{display:block;width:100%;height:100%;touch-action:none}
+.ontology-tooltip{position:absolute;z-index:4;display:none;width:205px;padding:10px 12px;border:1px solid #b8c9e9;border-radius:12px;background:#10183eea;color:#fff;box-shadow:0 12px 30px #11174330;pointer-events:none;backdrop-filter:blur(10px)}.ontology-tooltip.on{display:grid;gap:3px}.ontology-tooltip b{font-size:.82rem}.ontology-tooltip span{color:#77e2db;font-size:.7rem;font-weight:800}.ontology-tooltip small{color:#c7d2ea;font-size:.65rem;line-height:1.45}
+.ontology-hint{margin:9px 2px 0!important;color:#7a8498!important;font-size:.69rem!important}.ontology-panel .ai-chip{white-space:nowrap;background:linear-gradient(135deg,#e5f8f3,#e8efff);color:#185f66}
+@media(max-width:950px){.ontology-layout{grid-template-columns:1fr}.ontology-stage{height:430px}}
+@media(max-width:560px){.ontology-stage{height:470px}.ontology-panel{padding-inline:14px}.ontology-legend{gap:6px 9px}.ontology-tooltip{width:180px}}
+@media(prefers-reduced-motion:reduce){.ontology-tooltip{transition:none}}
