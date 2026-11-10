@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "functions": {
+    "api/app.js": { "maxDuration": 10 }
+  },
+  "redirects": [
+    { "source": "/", "destination": "/web/index.html", "permanent": false }
+  ],
+  "rewrites": [
+    { "source": "/api/app", "destination": "/api/app.js" }
+  ]
+}

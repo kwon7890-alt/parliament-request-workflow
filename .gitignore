@@ -1,0 +1,44 @@
+# 비밀값과 로컬 설정
+.env
+.env.*
+!.env.example
+node_modules/
+
+# 브라우저·서버 실행 중 생성되는 운영 기록
+cases.json
+web/cases.json
+
+# 원문·회신·개인정보 가능 자료는 공개 저장소에서 제외
+원문/
+부서회신/
+참고자료/
+data/문항목록.csv
+
+# 결과·배포 묶음
+*.zip
+*.log
+*.hwp
+*.hwpx
+*.docx
+*.xlsx
+결과/
+results/
+output/
+검증결과/
+파일목록.csv
+채점결과*.csv
+engine_시험결과*.md
+__pycache__/
+*.pyc
+
+# 수업 중 생성된 대화 기록·별도 실험물은 공개 배포에서 제외
+*대화*.md
+전체대화_MD_*/
+검증_예산결산_zip/
+시스템 개발/
+국회요구자료_3개버전_최종/
+
+# 공개 가능한 재외동포청 빈 공식양식 2종만 예외
+!web/templates/
+!web/templates/[[]답변양식[]]00번_ㅇㅇㅇㅇ과_요청일자_의원명_질의제목.hwp
+!web/templates/[[]국장결재양식[]]결재일자_국장결재양식.hwp

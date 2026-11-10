@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>국회 요구자료 배분화면 미리보기</title>
+  <style>
+    :root{color-scheme:light;--ink:#172235;--muted:#64748b;--line:#dbe4ef;--accent:#2457d6;--accent2:#6d5dfc;--paper:#fff}
+    *{box-sizing:border-box} body{margin:0;min-height:100vh;font-family:Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif;color:var(--ink);background:radial-gradient(circle at 18% 12%,#dbeafe 0,transparent 35%),radial-gradient(circle at 86% 82%,#ede9fe 0,transparent 38%),#f7f9fc;display:grid;place-items:center;padding:28px}
+    main{width:min(880px,100%);background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.85);border-radius:28px;box-shadow:0 26px 70px rgba(30,55,95,.16);overflow:hidden;animation:enter .65s cubic-bezier(.2,.7,.2,1) both}
+    header{padding:38px 42px 26px;background:linear-gradient(125deg,#173b91,#5f4fd5);color:#fff;position:relative;isolation:isolate}
+    header:after{content:"";position:absolute;width:250px;height:250px;border:1px solid #ffffff38;border-radius:50%;right:-80px;top:-135px;z-index:-1}
+    .eyebrow{font-size:13px;font-weight:800;letter-spacing:.13em;opacity:.78} h1{margin:10px 0 8px;font-size:clamp(27px,5vw,44px);line-height:1.16} header p{margin:0;max-width:630px;line-height:1.7;color:#e5edff}
+    .body{padding:32px 42px 40px}.status{display:flex;gap:12px;align-items:flex-start;background:#eff6ff;border:1px solid #bfdbfe;border-radius:16px;padding:16px 18px;margin-bottom:24px}.dot{width:10px;height:10px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 6px #22c55e20;margin-top:7px;flex:0 0 auto}.status strong{display:block;margin-bottom:3px}.status span{font-size:14px;color:#475569;line-height:1.55}
+    .actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{border:1px solid var(--line);border-radius:18px;padding:21px;background:var(--paper);transition:transform .45s cubic-bezier(.34,1.56,.64,1),box-shadow .3s ease,border-color .3s ease}.card:hover{transform:translateY(-5px);box-shadow:0 18px 36px -26px #172554;border-color:#a5b4fc}.card h2{font-size:17px;margin:0 0 8px}.card p{font-size:14px;line-height:1.6;color:var(--muted);margin:0 0 17px}.button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 17px;border-radius:12px;background:var(--accent);color:#fff;text-decoration:none;font-weight:800;font-size:14px;transition:transform .45s cubic-bezier(.34,1.56,.64,1),background .2s}.button:hover{transform:translateY(-2px);background:#1d4ed8}.button.secondary{background:#eef2ff;color:#3730a3}.button.secondary:hover{background:#e0e7ff}.steps{margin:26px 0 0;padding:0;list-style:none;counter-reset:s}.steps li{counter-increment:s;display:flex;gap:12px;align-items:flex-start;padding:10px 0;color:#475569;font-size:14px;line-height:1.55}.steps li:before{content:counter(s);display:grid;place-items:center;width:25px;height:25px;border-radius:8px;background:#eef2ff;color:#4338ca;font-weight:900;flex:0 0 auto}.note{margin:20px 0 0;color:#64748b;font-size:13px;line-height:1.6}
+    @keyframes enter{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+    @media(max-width:650px){header,.body{padding-left:24px;padding-right:24px}.actions{grid-template-columns:1fr}}
+    @media(prefers-reduced-motion:reduce){main{animation:none}.card,.button{transition:none}.card:hover,.button:hover{transform:none}}
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="eyebrow">S5 · WEB PREVIEW</div>
+      <h1>국회 요구자료 배분화면</h1>
+      <p>PDF 문항 분리, 소관 과 후보 추천, 주관·협조 과 선택과 배분확정을 확인하는 로컬 웹 미리보기입니다.</p>
+    </header>
+    <section class="body">
+      <div class="status"><span class="dot" aria-hidden="true"></span><div><strong>배분화면 파일이 포함되어 있습니다</strong><span>실제 화면은 <code>web/assign.html</code>이며 CSV와 PDF 모듈을 읽기 위해 로컬 웹서버로 여는 것이 안전합니다.</span></div></div>
+      <div class="actions">
+        <article class="card">
+          <h2>로컬 배분화면 열기</h2>
+          <p>먼저 같은 폴더의 <b>웹미리보기_실행.cmd</b>를 더블클릭한 뒤 아래 버튼을 누르세요.</p>
+          <a class="button" href="http://localhost:8000/assign.html">배분화면 열기</a>
+        </article>
+        <article class="card">
+          <h2>GitHub Pages에서 열기</h2>
+          <p>배포 후 저장소 주소 끝에 <b>/web/assign.html</b>을 붙이면 같은 화면이 열립니다.</p>
+          <a class="button secondary" href="web/assign.html">포함된 HTML 확인</a>
+        </article>
+      </div>
+      <ol class="steps">
+        <li>ZIP을 먼저 모두 압축 해제합니다.</li>
+        <li><b>웹미리보기_실행.cmd</b>를 더블클릭합니다.</li>
+        <li>브라우저에서 전체 78건·배분확정 2건 시험이 가능한 화면을 확인합니다.</li>
+      </ol>
+      <p class="note">HTML 파일만 따로 옮기면 배분 규칙·조직도·PDF 모듈을 찾지 못합니다. ZIP 안의 폴더 구조를 그대로 유지하세요.</p>
+    </section>
+  </main>
+  <script>
+    if (/^https?:$/.test(location.protocol)) {
+      const target = new URL("web/assign.html", location.href);
+      setTimeout(() => location.replace(target), 900);
+    }
+  </script>
+</body>
+</html>
