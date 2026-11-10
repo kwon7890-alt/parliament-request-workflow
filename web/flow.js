@@ -24,6 +24,8 @@
   };
   const unique = (values) => [...new Set((values ?? []).map((value) => clean(value)).filter(Boolean))];
   const assignedDepartments = (item) => unique([item.leadDepartment, ...(item.supportDepartments ?? [])]);
+  const cleanRows = (rows) => (Array.isArray(rows) ? rows : []).slice(0, 500).map((row) => Object.fromEntries(Object.entries(row ?? {}).slice(0, 30).map(([key, value]) => [clean(key, 120), clean(value, 4000)])));
+  const cleanIssues = (issues) => (Array.isArray(issues) ? issues : []).slice(0, 100).map((issue) => ({ type: clean(issue.type, 120), row: clean(issue.row, 30), message: clean(issue.message, 1000) }));
 
   function sanitizedCase(raw, at) {
     const source = clean(raw.source ?? raw.파일명, 500);
@@ -53,6 +55,7 @@
       replies: {},
       outputTemplateId: OFFICIAL_ANSWER_TEMPLATE,
       history: [{ action: "접수", actorRole: "국회 총괄 담당", at }],
+      supplements: {},
     };
   }
 
@@ -96,9 +99,10 @@
     }
 
     if (action === "회신") {
-      if (!["배분확정", "회신중"].includes(item.status)) fail(409, `현재 단계(${item.status})에서는 회신할 수 없습니다.`);
+      if (!["배분확정", "회신중", "보완요청"].includes(item.status)) fail(409, `현재 단계(${item.status})에서는 회신할 수 없습니다.`);
       const actorDepartment = clean(request.actorDepartment, 120);
       if (!assignedDepartments(item).includes(actorDepartment)) fail(403, "배분된 담당 과만 회신할 수 있습니다.");
+      if (item.status === "보완요청" && !item.supplements?.[actorDepartment]) fail(403, "보완을 요청받은 과만 다시 회신할 수 있습니다.");
       if (request.templateId !== OFFICIAL_ANSWER_TEMPLATE) fail(400, "0000청 공식 답변양식만 사용할 수 있습니다.");
       const memo = clean(request.memo, 12000);
       const fileName = clean(request.fileName, 300);
@@ -111,9 +115,12 @@
         sourceFileSize: Math.max(0, Number(request.fileSize) || 0),
         templateId: OFFICIAL_ANSWER_TEMPLATE,
         submittedAt: at,
+        rows: cleanRows(request.rows),
+        validationIssues: cleanIssues(request.validationIssues),
       };
+      if (item.supplements) delete item.supplements[actorDepartment];
       const assigned = assignedDepartments(item);
-      item.status = assigned.every((department) => item.replies[department]) ? "회신완료" : "회신중";
+      item.status = assigned.every((department) => item.replies[department]) && !Object.keys(item.supplements ?? {}).length ? "회신완료" : "회신중";
       item.history.push({ action: "회신", actorDepartment, at, templateId: OFFICIAL_ANSWER_TEMPLATE, status: item.status });
       return { db, result: { action, item } };
     }
@@ -129,6 +136,28 @@
       item.status = "재배정요청";
       item.reassignment = { actorDepartment, reason, desiredDepartment, requestedAt: at };
       item.history.push({ action: "재배정요청", actorDepartment, at, reason, desiredDepartment });
+      return { db, result: { action, item } };
+    }
+
+    if (action === "보완요청") {
+      if (item.status !== "회신완료") fail(409, `현재 단계(${item.status})에서는 보완을 요청할 수 없습니다.`);
+      const targetDepartment = clean(request.targetDepartment, 120), reason = clean(request.reason, 2000);
+      if (!assignedDepartments(item).includes(targetDepartment)) fail(403, "배분된 담당 과에만 보완을 요청할 수 있습니다.");
+      if (!reason) fail(400, "보완 요청 사유는 필수입니다.");
+      item.supplements ||= {};
+      item.supplements[targetDepartment] = { reason, requestedAt: at };
+      item.status = "보완요청";
+      item.history.push({ action: "보완요청", actorRole: "국회 총괄 담당", targetDepartment, reason, at });
+      return { db, result: { action, item } };
+    }
+
+    if (action === "확정") {
+      if (item.status !== "회신완료") fail(409, `현재 단계(${item.status})에서는 확정할 수 없습니다.`);
+      const comment = clean(request.comment, 2000);
+      if (!comment) fail(400, "확정 코멘트는 필수입니다.");
+      item.status = "확정";
+      item.finalization = { comment, finalizedAt: at, actorRole: "국회 총괄 담당" };
+      item.history.push({ action: "확정", actorRole: "국회 총괄 담당", comment, at });
       return { db, result: { action, item } };
     }
 

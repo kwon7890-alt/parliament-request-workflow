@@ -142,11 +142,11 @@
     for (const link of links) {
       const source = nodePosition(link.source), target = nodePosition(link.target);
       const highlighted = hovered && (link.source === hovered || link.target === hovered);
-      context.strokeStyle = highlighted ? "rgba(35,168,187,.72)" : "rgba(83,105,157,.18)";
-      context.lineWidth = highlighted ? 1.5 : .75;
+      context.strokeStyle = highlighted ? "rgba(124,246,212,.92)" : "rgba(132,166,215,.34)";
+      context.lineWidth = highlighted ? 1.8 : 1;
       context.beginPath(); context.moveTo(source.x, source.y); context.lineTo(target.x, target.y); context.stroke();
       if (highlighted && width > 560) {
-        context.fillStyle = "rgba(47,70,113,.9)";
+        context.fillStyle = "rgba(220,255,247,.95)";
         context.fillText(link.relation, (source.x + target.x) / 2, (source.y + target.y) / 2 - 4);
       }
     }
@@ -154,27 +154,27 @@
     for (const node of nodes) {
       const position = nodePosition(node);
       const isHovered = node === hovered;
-      const fontSize = node.id === "response" ? 14 : node.count > 0 ? 12 : 10.5;
+      const fontSize = node.id === "response" ? 15 : node.count > 0 ? 12.5 : 11.5;
       context.font = `${node.id === "response" ? 900 : 750} ${fontSize}px "Malgun Gothic", sans-serif`;
       const textWidth = context.measureText(node.label).width;
       const boxWidth = Math.max(node.radius * 2, textWidth + 22);
       const boxHeight = node.id === "response" ? 48 : node.count > 0 ? 40 : 34;
       node.hit = { x: position.x, y: position.y, width: boxWidth, height: boxHeight };
-      context.shadowColor = isHovered ? `${groupColors[node.group]}88` : "rgba(17,23,67,.08)";
-      context.shadowBlur = isHovered ? 18 : 7;
+      context.shadowColor = isHovered ? `${groupColors[node.group]}bb` : "rgba(0,0,0,.42)";
+      context.shadowBlur = isHovered ? 20 : 9;
       roundedRect(position.x, position.y, boxWidth, boxHeight, 12);
-      context.fillStyle = isHovered ? groupColors[node.group] : `${groupColors[node.group]}22`;
+      context.fillStyle = isHovered ? `${groupColors[node.group]}66` : `${groupColors[node.group]}28`;
       context.fill();
       context.shadowBlur = 0;
-      context.strokeStyle = isHovered ? groupColors[node.group] : `${groupColors[node.group]}88`;
-      context.lineWidth = node.id === "response" ? 2 : 1;
+      context.strokeStyle = isHovered ? "#eafff9" : `${groupColors[node.group]}cc`;
+      context.lineWidth = node.id === "response" ? 2.4 : 1.35;
       context.stroke();
-      context.fillStyle = node.id === "response" ? "#18213b" : "#31405f";
+      context.fillStyle = "#f4f8ff";
       context.textBaseline = "middle";
       context.fillText(node.label, position.x, position.y - (node.count ? 5 : 0));
       if (node.count) {
         context.font = '700 8px "Malgun Gothic", sans-serif';
-        context.fillStyle = "#65728d";
+        context.fillStyle = "#c6d4e8";
         context.fillText(`${node.count}건`, position.x, position.y + 11);
       }
     }

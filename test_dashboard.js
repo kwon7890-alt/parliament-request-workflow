@@ -12,7 +12,7 @@ const { chromium } = require("playwright");
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("http://localhost:8000/index.html", { waitUntil: "networkidle" });
   await page.waitForFunction(() => document.querySelector("#mode")?.textContent !== "저장 방식 확인 중");
-  await page.waitForFunction(() => document.querySelector("#globe3d")?.dataset.renderer === "canvas-3d" && document.querySelector("#globe3d").width > 0);
+  await page.waitForFunction(() => document.querySelector("#globe3d")?.dataset.renderer === "world-air-routes" && document.querySelector("#globe3d").width > 0);
   await page.waitForFunction(() => Number(document.querySelector("#ontologyGraph")?.dataset.frame) > 4);
   const pulseCard = page.locator(".pulse-card");
   const cardBox = await pulseCard.boundingBox();
@@ -35,6 +35,9 @@ const { chromium } = require("playwright");
     globeCanvas: await page.locator("#globe3d").count(),
     globeRenderer: await page.locator("#globe3d").getAttribute("data-renderer"),
     globeMotion: await page.locator("#globe3d").getAttribute("data-motion"),
+    globalHub: await page.locator("#globe3d").getAttribute("data-hub"),
+    globalHubAnchor: await page.locator("#globe3d").getAttribute("data-hub-anchor"),
+    globalRoutes: Number(await page.locator("#globe3d").getAttribute("data-routes")),
     tiltTransform,
     ontologyRenderer: await ontologyCanvas.getAttribute("data-renderer"),
     ontologyNodes: Number(await ontologyCanvas.getAttribute("data-nodes")),
@@ -58,6 +61,6 @@ const { chromium } = require("playwright");
   result.mobileOverflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
   await page.screenshot({ path: path.join(__dirname, "검증결과", "외통위_메인화면_모바일.png"), fullPage: true });
   await browser.close();
-  if (result.agency !== "0000청" || !result.committeeHeading.includes("외교통일위원회") || result.members !== 8 || result.workflowLinks !== 3 || result.chartLibrary !== "function" || result.chartCanvas !== 1 || result.globeCanvas !== 1 || result.globeRenderer !== "canvas-3d" || result.globeMotion !== "animated" || result.reducedMotion !== "static" || !result.tiltTransform.includes("rotateX") || result.ontologyRenderer !== "force-ontology" || result.ontologyNodes < 25 || result.ontologyLinks < 30 || !result.ontologyTooltip.includes("on") || result.ontologyReducedMotion !== "static" || result.mobileOverflow || result.errors.length) throw new Error(JSON.stringify(result));
+  if (result.agency !== "0000청" || !result.committeeHeading.includes("외교통일위원회") || result.members !== 8 || result.workflowLinks !== 4 || result.chartLibrary !== "function" || result.chartCanvas !== 1 || result.globeCanvas !== 1 || result.globeRenderer !== "world-air-routes" || result.globalHub !== "Seoul" || result.globalHubAnchor !== "0.35" || result.globalRoutes !== 7 || result.globeMotion !== "animated" || result.reducedMotion !== "static" || !result.tiltTransform.includes("rotateX") || result.ontologyRenderer !== "force-ontology" || result.ontologyNodes < 25 || result.ontologyLinks < 30 || !result.ontologyTooltip.includes("on") || result.ontologyReducedMotion !== "static" || result.mobileOverflow || result.errors.length) throw new Error(JSON.stringify(result));
   console.log(JSON.stringify(result, null, 2));
 })().catch((error) => { console.error(error); process.exitCode = 1; });

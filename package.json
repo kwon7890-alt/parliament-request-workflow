@@ -1,13 +1,18 @@
 {
   "name": "parliament-request-workflow",
-  "version": "0.6.0",
+  "version": "1.2.0",
   "private": true,
   "description": "국회 요구자료 배분·회신 기록 공유 PoC",
   "dependencies": {
-    "@vercel/blob": "2.8.2"
+    "@vercel/blob": "2.8.2",
+    "three": "0.187.0"
   },
   "scripts": {
     "test:api": "node test_api.js",
-    "test:s5": "node test_s5.mjs"
+    "test:s5": "node test_s5.mjs",
+    "test:chat": "node test_chat.js",
+    "test:s8": "node test_validate.js && node test_api.js",
+    "test:bridge": "node test_bridge.js",
+    "test:ui": "node test_ai_dark_browser.js"
   }
 }

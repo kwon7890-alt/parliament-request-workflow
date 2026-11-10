@@ -1,12 +1,14 @@
 {
   "version": 2,
   "functions": {
-    "api/app.js": { "maxDuration": 10 }
+    "api/app.js": { "maxDuration": 10 },
+    "api/chat.js": { "maxDuration": 30 }
   },
   "redirects": [
     { "source": "/", "destination": "/web/index.html", "permanent": false }
   ],
   "rewrites": [
-    { "source": "/api/app", "destination": "/api/app.js" }
+    { "source": "/api/app", "destination": "/api/app.js" },
+    { "source": "/api/chat", "destination": "/api/chat.js" }
   ]
 }

@@ -51,5 +51,24 @@ async function call(handler, method, body) {
   assert.equal(result.payload.cases[0].outputTemplateId, "official-answer");
   assert.equal(result.payload.cases[1].status, "재배정요청");
   assert.equal(store.snapshot().writes, 6);
-  console.log(JSON.stringify({ tests: 13, finalStatus: result.payload.cases[0].status, reassignmentStatus: result.payload.cases[1].status, rejected: { order: 409, outsideOrganization: 400, wrongDepartment: 403, wrongTemplate: 400, missingReason: 400 }, writes: store.snapshot().writes }, null, 2));
+  const aiHandler = createHandler({ store, organization, recommend: async (requirement) => {
+    if (requirement.includes("목록밖")) return { 후보: [{ 과: "미래전략과", 근거: "목록 밖" }, { 과: "운영지원과", 근거: "청사 운영" }], 해당없음: false };
+    if (requirement.includes("해당없음")) return { 후보: [], 해당없음: true };
+    return { 후보: [{ 과: "정보보호과", 근거: "사이버 보안 업무" }], 해당없음: false };
+  } });
+  const aiValid = await call(aiHandler, "POST", { action: "AI추천", requirement: "사이버 보안 현황" });
+  assert.equal(aiValid.statusCode, 200); assert.equal(aiValid.payload.후보[0].과, "정보보호과");
+  const aiFiltered = await call(aiHandler, "POST", { action: "AI추천", requirement: "목록밖 후보 포함" });
+  assert.deepEqual(aiFiltered.payload.후보.map((item) => item.과), ["운영지원과"]);
+  const aiNone = await call(aiHandler, "POST", { action: "AI추천", requirement: "해당없음 문항" });
+  assert.equal(aiNone.payload.해당없음, true); assert.equal(store.snapshot().writes, 6);
+
+  assert.equal((await call(handler, "POST", { action: "보완요청", id: sample.id, targetDepartment: "디지털정책과", reason: "합계 불일치 확인" })).statusCode, 200);
+  assert.equal(store.snapshot().cases[0].status, "보완요청");
+  assert.equal((await call(handler, "POST", { action: "회신", id: sample.id, actorDepartment: "디지털정책과", memo: "합계 확인 완료", rows: [{ 연도: "2026", 예산: "100" }], validationIssues: [], templateId: FlowEngine.OFFICIAL_ANSWER_TEMPLATE })).statusCode, 200);
+  assert.equal(store.snapshot().cases[0].status, "회신완료");
+  assert.equal((await call(handler, "POST", { action: "확정", id: sample.id, comment: "" })).statusCode, 400);
+  assert.equal((await call(handler, "POST", { action: "확정", id: sample.id, comment: "수치와 근거 확인 완료" })).statusCode, 200);
+  assert.equal(store.snapshot().cases[0].status, "확정");
+  console.log(JSON.stringify({ tests: 21, aiRecommendationTests: 3, supplementAndFinalizeTests: 5, finalStatus: store.snapshot().cases[0].status, reassignmentStatus: store.snapshot().cases[1].status, rejected: { order: 409, outsideOrganization: 400, wrongDepartment: 403, wrongTemplate: 400, missingReason: 400 }, writes: store.snapshot().writes }, null, 2));
 })().catch((error) => { console.error(error); process.exit(1); });

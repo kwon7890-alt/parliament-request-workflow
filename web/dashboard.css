@@ -9,7 +9,7 @@
 /* 2026 spatial dashboard: 순수 canvas 3D + 한 개의 유리 현황 카드 */
 .committee-hero{isolation:isolate;min-height:420px;border:1px solid #ffffff1f;border-radius:30px;background:radial-gradient(circle at 78% 50%,#1b6b8170,transparent 30%),linear-gradient(124deg,#080d2d 0%,#141e50 58%,#0e425e);box-shadow:0 32px 72px rgba(12,18,56,.24);perspective:1100px}
 .committee-hero::before,.committee-hero::after{z-index:0;opacity:.42}
-.globe3d{position:absolute;inset:0;z-index:1;width:100%;height:100%;pointer-events:none;opacity:.9}
+.globe3d{position:absolute;inset:0;z-index:1;width:100%;height:100%;pointer-events:none;opacity:.96}
 .committee-copy,.pulse-card{z-index:2}
 .committee-copy{align-self:center;max-width:760px}
 .spatial-label{display:inline-flex;align-items:center;gap:8px;margin-bottom:18px;padding:7px 11px;border:1px solid #76e0e74a;border-radius:999px;background:#071a356b;color:#a8f3f4;font-size:.66rem;font-weight:900;letter-spacing:.14em;backdrop-filter:blur(10px)}
@@ -34,3 +34,12 @@
 @media(max-width:950px){.ontology-layout{grid-template-columns:1fr}.ontology-stage{height:430px}}
 @media(max-width:560px){.ontology-stage{height:470px}.ontology-panel{padding-inline:14px}.ontology-legend{gap:6px 9px}.ontology-tooltip{width:180px}}
 @media(prefers-reduced-motion:reduce){.ontology-tooltip{transition:none}}
+
+/* 네 번째 업무 진입점: AI 업무 안내 */
+.work-links{grid-template-columns:repeat(4,1fr)}
+@media(max-width:950px){.work-links{grid-template-columns:1fr}}
+
+/* 42쪽: 감사 대응용 처리 기록 골라 보기 */
+.history-panel{overflow:hidden}.history-panel h2 span{display:inline-block;margin-left:8px;padding:5px 9px;border-radius:999px;background:#e8f0ff;color:#2658bd;font-size:.68rem;vertical-align:middle}.history-filters{display:grid;grid-template-columns:180px 220px minmax(220px,1fr);gap:10px;margin:18px 0 14px}.history-filters label{display:grid;gap:6px;color:#59667e;font-size:.7rem;font-weight:900}.history-filters select,.history-filters input{width:100%;min-height:43px;padding:9px 11px;border:1px solid #d7deeb;border-radius:10px;background:#fff;color:#17213b;font:inherit;font-size:.78rem;outline:none;transition:border-color .2s,box-shadow .2s}.history-filters select:focus,.history-filters input:focus{border-color:#5d83d8;box-shadow:0 0 0 3px #3565cb18}.history-table-wrap{overflow:auto;border:1px solid #dfe5ef;border-radius:14px}.history-table{width:100%;min-width:780px;border-collapse:collapse}.history-table th,.history-table td{padding:11px 13px;border-bottom:1px solid #e9edf4;text-align:left;font-size:.74rem}.history-table th{position:sticky;top:0;background:#f4f7fc;color:#526078;font-size:.68rem;letter-spacing:.03em}.history-table tbody tr{transition:background .2s}.history-table tbody tr:hover{background:#f8fbff}.history-action{font-weight:900;color:#274fa3}.shine-button{position:relative;overflow:hidden}.shine-button::after{content:"";position:absolute;inset:-30% auto -30% -55%;width:32%;transform:skewX(-18deg);background:linear-gradient(105deg,transparent,#fff9,transparent);transition:transform .65s ease}.shine-button:hover::after{transform:translateX(520%) skewX(-18deg)}
+@media(max-width:760px){.history-filters{grid-template-columns:1fr}.history-panel .panel-head{align-items:flex-start}.history-panel .panel-head .btn{width:100%}}
+@media(prefers-reduced-motion:reduce){.shine-button::after{display:none}.history-table tbody tr,.history-filters select,.history-filters input{transition:none}}
