@@ -5,3 +5,19 @@
 .donut::before{content:none!important}
 .donut canvas{position:absolute;inset:0;width:165px!important;height:165px!important}
 .donut span{position:relative;z-index:1;pointer-events:none}
+
+/* 2026 spatial dashboard: 순수 canvas 3D + 한 개의 유리 현황 카드 */
+.committee-hero{isolation:isolate;min-height:420px;border:1px solid #ffffff1f;border-radius:30px;background:radial-gradient(circle at 78% 50%,#1b6b8170,transparent 30%),linear-gradient(124deg,#080d2d 0%,#141e50 58%,#0e425e);box-shadow:0 32px 72px rgba(12,18,56,.24);perspective:1100px}
+.committee-hero::before,.committee-hero::after{z-index:0;opacity:.42}
+.globe3d{position:absolute;inset:0;z-index:1;width:100%;height:100%;pointer-events:none;opacity:.9}
+.committee-copy,.pulse-card{z-index:2}
+.committee-copy{align-self:center;max-width:760px}
+.spatial-label{display:inline-flex;align-items:center;gap:8px;margin-bottom:18px;padding:7px 11px;border:1px solid #76e0e74a;border-radius:999px;background:#071a356b;color:#a8f3f4;font-size:.66rem;font-weight:900;letter-spacing:.14em;backdrop-filter:blur(10px)}
+.spatial-label span{width:7px;height:7px;border-radius:50%;background:#5ce4ca;box-shadow:0 0 0 5px #5ce4ca18,0 0 18px #5ce4ca}
+.pulse-card{border-color:#ffffff34;border-radius:24px;background:linear-gradient(145deg,#ffffff18,#ffffff08);backdrop-filter:blur(18px) saturate(130%);box-shadow:0 24px 60px #02071e50,inset 0 1px #ffffff28;transform-style:preserve-3d;will-change:transform;transition:transform .55s cubic-bezier(.34,1.56,.64,1),border-color .3s}
+.pulse-card::before{content:"";position:absolute;inset:1px;border-radius:23px;background:linear-gradient(125deg,#ffffff14,transparent 38%);pointer-events:none}
+.pulse-card:hover{border-color:#7fe7e978}
+.pulse-card>*{position:relative;transform:translateZ(24px)}
+@media(max-width:950px){.globe3d{opacity:.55}}
+@media(max-width:560px){.committee-hero{min-height:0}.globe3d{opacity:.35}.spatial-label{letter-spacing:.08em}}
+@media(prefers-reduced-motion:reduce){.pulse-card{transform:none!important;will-change:auto}.globe3d{opacity:.58}}
