@@ -85,6 +85,12 @@ function createHandler(options = {}) {
   const model = options.model ?? process.env.OPENAI_MODEL;
   const groqApiKey = options.groqApiKey ?? process.env.GROQ_API_KEY;
   const groqModel = options.groqModel ?? process.env.GROQ_MODEL ?? "openai/gpt-oss-20b";
+  const groqModels = [...new Set([
+    typeof groqModel === "string" ? groqModel.trim() : "",
+    "openai/gpt-oss-20b",
+    "openai/gpt-oss-120b",
+    "qwen/qwen3.8-27b",
+  ].filter(Boolean))];
   return async function handler(request, response) {
     try {
       if (request.method !== "POST") return send(response, 405, { error: "POST만 사용할 수 있습니다." });
@@ -93,8 +99,17 @@ function createHandler(options = {}) {
       if (!message) return send(response, 400, { error: "질문을 입력해 주세요." });
       if (message.length > MAX_MESSAGE_LENGTH) return send(response, 400, { error: `질문은 ${MAX_MESSAGE_LENGTH}자 이내로 입력해 주세요.` });
       if (groqApiKey && typeof fetchImpl === "function") {
-        const answer = await requestGroq(message, { fetch: fetchImpl, apiKey: groqApiKey, model: groqModel });
-        return send(response, 200, { answer, mode: "Groq 무료 LLM", configured: true });
+        let lastModelError;
+        for (const candidateModel of groqModels) {
+          try {
+            const answer = await requestGroq(message, { fetch: fetchImpl, apiKey: groqApiKey, model: candidateModel });
+            return send(response, 200, { answer, mode: "Groq 무료 LLM", model: candidateModel, configured: true });
+          } catch (error) {
+            if (!(error instanceof ProviderServiceError) || error.providerStatus !== 404) throw error;
+            lastModelError = error;
+          }
+        }
+        throw lastModelError;
       }
       if (!apiKey || !model || typeof fetchImpl !== "function") return send(response, 200, { answer: fallbackAnswer(message), mode: "서버 안내 모드", configured: false });
       const answer = await requestOpenAI(message, { fetch: fetchImpl, apiKey, model });
