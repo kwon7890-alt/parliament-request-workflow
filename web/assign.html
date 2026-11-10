@@ -40,9 +40,12 @@
   <script src="history.js"></script>
   <script type="module">
     import * as pdfjsLib from "./lib/pdf.min.mjs";
+    import Fuse from "./lib/fuse.min.mjs";
     pdfjsLib.GlobalWorkerOptions.workerSrc = "./lib/pdf.worker.min.mjs";
     const REDUCE = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const $ = (selector) => document.querySelector(selector);
+    $("#textFilter").dataset.engine = "Fuse.js";
+    $("#textFilter").placeholder = "의원·요구내용 유사 검색";
     const escapeHtml = (value) => String(value ?? "").replace(/[&<>'"]/g, (character) => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"})[character]);
     let staging = [], organizations = [];
 
@@ -108,9 +111,16 @@
 
     function departmentOptions(selected = "") { return organizations.map((item) => `<option value="${escapeHtml(item.과)}"${item.과 === selected ? " selected" : ""}>${escapeHtml(item.과)}</option>`).join(""); }
     async function renderCases() {
-      const status = $("#statusFilter").value, query = $("#textFilter").value.trim().toLowerCase();
+      const status = $("#statusFilter").value, query = $("#textFilter").value.trim();
       const all = await ApiClient.getCases();
-      const filtered = all.filter((item) => (!status || item.status === status) && (!query || `${item.member} ${item.requirement}`.toLowerCase().includes(query)));
+      const statusFiltered = all.filter((item) => !status || item.status === status);
+      const filtered = query
+        ? new Fuse(statusFiltered, {
+            keys: ["member", "requirement", "questionNumber", "leadDepartment"],
+            threshold: 0.35,
+            ignoreLocation: true,
+          }).search(query).map((result) => result.item)
+        : statusFiltered;
       $("#totalCount").textContent = all.length; $("#receivedCount").textContent = all.filter((item) => item.status === "접수").length; $("#assignedCount").textContent = all.filter((item) => item.status === "배분확정").length;
       $("#caseRows").innerHTML = filtered.length ? filtered.map((item, index) => {
         const first = item.candidates[0]?.과 ?? ""; const selected = item.leadDepartment || first;

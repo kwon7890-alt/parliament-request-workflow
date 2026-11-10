@@ -45,15 +45,17 @@ const sha256 = (file) => crypto.createHash("sha256").update(fs.readFileSync(file
   await page.screenshot({ path: path.join(root, "검증결과", "S6_현업회신_공식양식.png"), fullPage: true });
 
   await page.goto("http://localhost:8000/collect.html", { waitUntil: "networkidle" });
-  await page.waitForFunction(() => document.querySelector("#rows")?.textContent.includes("회신완료"));
+  await page.waitForFunction(() => window.__casesTable?.getDataCount() === 78);
   const collectTemplateHrefs = await page.locator('a[download]').evaluateAll((links) => links.map((link) => link.getAttribute("href")));
   await page.evaluate(() => scrollTo(0, 0));
   await page.screenshot({ path: path.join(root, "검증결과", "S6_취합현황_공식양식.png"), fullPage: true });
   const result = {
-    total: await page.locator("#rows tr").count(),
+    total: await page.evaluate(() => window.__casesTable.getDataCount()),
     pastHistoryCases,
     department,
-    finalStatus: await page.locator("#rows .status.done").first().textContent(),
+    finalStatus: await page.locator("#casesTable .status.done").first().textContent(),
+    tableEngine: await page.locator("#casesTable").getAttribute("data-engine"),
+    tabulatorLibrary: await page.evaluate(() => typeof Tabulator),
     deptTemplateLinks,
     collectTemplateLinks: collectTemplateHrefs,
     onlyOfficialHwp: collectTemplateHrefs.length === 2 && collectTemplateHrefs.every((href) => href.endsWith(".hwp")),
@@ -63,5 +65,5 @@ const sha256 = (file) => crypto.createHash("sha256").update(fs.readFileSync(file
   };
   console.log(JSON.stringify(result, null, 2));
   await browser.close();
-  if (result.total !== 78 || result.pastHistoryCases !== 58 || result.finalStatus !== "회신완료" || result.deptTemplateLinks < 2 || !result.onlyOfficialHwp || result.answerTemplateHash !== "71F474A79151FB4D0A1FD4F0D5963929162D858EE4BD2DBDF4890700E33650D7" || result.approvalTemplateHash !== "0A7E0813F0F9C39CFE05FF06FC0F6FE0443E6B66481030A06E31D0E0275341D6" || result.consoleErrors.length) process.exit(1);
+  if (result.total !== 78 || result.pastHistoryCases !== 58 || result.finalStatus !== "회신완료" || result.tableEngine !== "Tabulator" || result.tabulatorLibrary !== "function" || result.deptTemplateLinks < 2 || !result.onlyOfficialHwp || result.answerTemplateHash !== "71F474A79151FB4D0A1FD4F0D5963929162D858EE4BD2DBDF4890700E33650D7" || result.approvalTemplateHash !== "0A7E0813F0F9C39CFE05FF06FC0F6FE0443E6B66481030A06E31D0E0275341D6" || result.consoleErrors.length) process.exit(1);
 })().catch((error) => { console.error(error); process.exit(1); });
