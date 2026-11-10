@@ -7,13 +7,13 @@
 <body>
   <header class="topbar"><div class="brand">A부 국회 요구자료</div><nav class="nav"><a href="index.html">시작 화면</a><a href="assign.html">배분</a><span class="current" aria-current="page">현업 회신</span><a href="collect.html">취합</a></nav></header>
   <main class="container">
-    <section class="hero" data-reveal><div><p class="eyebrow">S6 · Department Reply</p><h1>내 과 문항만 보고 회신합니다</h1><p class="lead">질의서 형식은 달라도 회신 기록은 같은 단계로 관리합니다. 답변 결과물은 재외동포청 공식 답변양식만 사용합니다.</p></div><span class="mode" id="mode">저장 방식 확인 중</span></section>
+    <section class="hero" data-reveal><div><p class="eyebrow">S6 · Department Reply</p><h1>내 과 문항만 보고 회신합니다</h1><p class="lead">질의서 형식은 달라도 회신 기록은 같은 단계로 관리합니다. 답변 결과물은 OOOO청 공식 답변양식만 사용합니다.</p></div><span class="mode" id="mode">저장 방식 확인 중</span></section>
 
     <section class="panel official-only" data-reveal>
       <div class="panel-head"><div><h2>공식양식 고정</h2><p>다른 답변서·결재서 양식은 선택하거나 생성할 수 없습니다.</p></div></div>
       <div class="template-grid">
-        <article class="template"><b>재외동포청 공식 답변양식</b><span>문항별 현업 답변 작성용</span><br><a href="templates/%5B답변양식%5D00번_ㅇㅇㅇㅇ과_요청일자_의원명_질의제목.hwp" download>공식 답변양식 HWP 내려받기</a></article>
-        <article class="template"><b>재외동포청 공식 국장결재양식</b><span>취합 후 국장결재 목록용</span><br><a href="templates/%5B국장결재양식%5D결재일자_국장결재양식.hwp" download>공식 국장결재양식 HWP 내려받기</a></article>
+        <article class="template"><b>OOOO청 공식 답변양식</b><span>문항별 현업 답변 작성용</span><br><a href="templates/%5B답변양식%5D00번_ㅇㅇㅇㅇ과_요청일자_의원명_질의제목.hwp" download>공식 답변양식 HWP 내려받기</a></article>
+        <article class="template"><b>OOOO청 공식 국장결재양식</b><span>취합 후 국장결재 목록용</span><br><a href="templates/%5B국장결재양식%5D결재일자_국장결재양식.hwp" download>공식 국장결재양식 HWP 내려받기</a></article>
       </div>
     </section>
 
@@ -42,7 +42,7 @@
       $("#cards").innerHTML = mine.length ? mine.map((item) => {
         const reply = item.replies?.[department] ?? {};
         const done = Boolean(reply.submittedAt);
-        return `<article class="case" data-id="${esc(item.id)}"><div class="case-top"><div><b>${esc(item.member)} · ${esc(item.questionNumber)}번</b><div class="meta">${esc(item.committee)} · 기한 ${esc(item.dueDate || "미정")} · ${department === item.leadDepartment ? "주관" : "협조"}</div></div><span class="status ${done ? "done" : ""}">${esc(item.status)}</span></div><div class="requirement">${esc(item.requirement)}</div>${item.reassignment ? `<div class="reassign"><b>재배정 요청:</b> ${esc(item.reassignment.reason)} → ${esc(item.reassignment.desiredDepartment)}</div>` : ""}${historyHtml(item)}<div class="form-grid"><div class="field"><label>부서 회신 원자료(엑셀)</label><input class="input reply-file" type="file" accept=".xlsx,.xls"></div><div class="field"><label>출력 양식</label><input class="input" value="재외동포청 공식 답변양식" readonly></div><div class="field full"><label>회신 메모</label><textarea class="textarea memo" placeholder="사실·수치·근거와 별첨 내용을 작성하세요.">${esc(reply.memo ?? "")}</textarea></div><div class="field"><label>재배정 사유</label><input class="input reason" placeholder="우리 과 소관이 아닌 이유"></div><div class="field"><label>희망 과</label><select class="select desired"><option value="">희망 과 선택</option>${options()}</select></div></div><div class="actions"><button class="btn submit" type="button" ${item.status === "회신완료" || item.status === "재배정요청" ? "disabled" : ""}>${done ? "회신 제출됨" : "회신 제출"}</button><button class="btn warn reassign-button" type="button" ${item.status === "회신완료" || item.status === "재배정요청" ? "disabled" : ""}>재배정 요청</button><a class="btn secondary" href="templates/%5B답변양식%5D00번_ㅇㅇㅇㅇ과_요청일자_의원명_질의제목.hwp" download>공식양식 받기</a></div></article>`;
+        return `<article class="case" data-id="${esc(item.id)}"><div class="case-top"><div><b>${esc(item.member)} · ${esc(item.questionNumber)}번</b><div class="meta">${esc(item.committee)} · 기한 ${esc(item.dueDate || "미정")} · ${department === item.leadDepartment ? "주관" : "협조"}</div></div><span class="status ${done ? "done" : ""}">${esc(item.status)}</span></div><div class="requirement">${esc(item.requirement)}</div>${item.reassignment ? `<div class="reassign"><b>재배정 요청:</b> ${esc(item.reassignment.reason)} → ${esc(item.reassignment.desiredDepartment)}</div>` : ""}${historyHtml(item)}<div class="form-grid"><div class="field"><label>부서 회신 원자료(엑셀)</label><input class="input reply-file" type="file" accept=".xlsx,.xls"></div><div class="field"><label>출력 양식</label><input class="input" value="OOOO청 공식 답변양식" readonly></div><div class="field full"><label>회신 메모</label><textarea class="textarea memo" placeholder="사실·수치·근거와 별첨 내용을 작성하세요.">${esc(reply.memo ?? "")}</textarea></div><div class="field"><label>재배정 사유</label><input class="input reason" placeholder="우리 과 소관이 아닌 이유"></div><div class="field"><label>희망 과</label><select class="select desired"><option value="">희망 과 선택</option>${options()}</select></div></div><div class="actions"><button class="btn submit" type="button" ${item.status === "회신완료" || item.status === "재배정요청" ? "disabled" : ""}>${done ? "회신 제출됨" : "회신 제출"}</button><button class="btn warn reassign-button" type="button" ${item.status === "회신완료" || item.status === "재배정요청" ? "disabled" : ""}>재배정 요청</button><a class="btn secondary" href="templates/%5B답변양식%5D00번_ㅇㅇㅇㅇ과_요청일자_의원명_질의제목.hwp" download>공식양식 받기</a></div></article>`;
       }).join("") : '<div class="empty">이 과에 배분된 문항이 없습니다.</div>';
     }
     async function reload() { cases = await ApiClient.getCases(); render(); }
@@ -54,7 +54,7 @@
         if (event.target.closest(".submit")) {
           const file = card.querySelector(".reply-file").files[0]; const memo = card.querySelector(".memo").value;
           await ApiClient.post("회신", { id: card.dataset.id, actorDepartment: department, memo, fileName: file?.name ?? "", fileSize: file?.size ?? 0, templateId: "official-answer" }, organization);
-          notice("회신을 저장했습니다. 출력은 재외동포청 공식 답변양식만 사용됩니다."); await reload();
+          notice("회신을 저장했습니다. 출력은 OOOO청 공식 답변양식만 사용됩니다."); await reload();
         }
         if (event.target.closest(".reassign-button")) {
           await ApiClient.post("재배정요청", { id: card.dataset.id, actorDepartment: department, reason: card.querySelector(".reason").value, desiredDepartment: card.querySelector(".desired").value }, organization);

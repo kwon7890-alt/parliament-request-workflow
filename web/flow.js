@@ -99,7 +99,7 @@
       if (!["배분확정", "회신중"].includes(item.status)) fail(409, `현재 단계(${item.status})에서는 회신할 수 없습니다.`);
       const actorDepartment = clean(request.actorDepartment, 120);
       if (!assignedDepartments(item).includes(actorDepartment)) fail(403, "배분된 담당 과만 회신할 수 있습니다.");
-      if (request.templateId !== OFFICIAL_ANSWER_TEMPLATE) fail(400, "재외동포청 공식 답변양식만 사용할 수 있습니다.");
+      if (request.templateId !== OFFICIAL_ANSWER_TEMPLATE) fail(400, "OOOO청 공식 답변양식만 사용할 수 있습니다.");
       const memo = clean(request.memo, 12000);
       const fileName = clean(request.fileName, 300);
       if (!memo && !fileName) fail(400, "회신 메모 또는 회신 파일이 필요합니다.");
