@@ -1,6 +1,14 @@
 "use strict";
 
 const MAX_MESSAGE_LENGTH = 1000;
+class ProviderServiceError extends Error {
+  constructor(provider, providerStatus) {
+    super(`${provider} 응답 서비스 오류`);
+    this.name = "ProviderServiceError";
+    this.provider = provider;
+    this.providerStatus = providerStatus;
+  }
+}
 const SYSTEM_INSTRUCTIONS = [
   "당신은 0000청 외교통일위원회 요구자료 대응 업무를 안내하는 보조자다.",
   "접수, 문항 분해, 소관 과 후보 확인, 사람의 최종 배분, 부서 회신, 취합이라는 범위 안에서 짧고 정확하게 답한다.",
@@ -47,7 +55,7 @@ async function requestOpenAI(message, options) {
     headers: { "authorization": `Bearer ${options.apiKey}`, "content-type": "application/json" },
     body: JSON.stringify({ model: options.model, store: false, instructions: SYSTEM_INSTRUCTIONS, input: [{ role: "user", content: [{ type: "input_text", text: message }] }] }),
   });
-  if (!response.ok) throw new Error(`AI 응답 서비스 오류(${response.status})`);
+  if (!response.ok) throw new ProviderServiceError("OpenAI", response.status);
   const answer = extractOutput(await response.json());
   if (!answer) throw new Error("AI 응답 내용이 비어 있습니다.");
   return answer;
@@ -64,7 +72,7 @@ async function requestGroq(message, options) {
       messages: [{ role: "system", content: SYSTEM_INSTRUCTIONS }, { role: "user", content: message }],
     }),
   });
-  if (!response.ok) throw new Error(`AI 응답 서비스 오류(${response.status})`);
+  if (!response.ok) throw new ProviderServiceError("Groq", response.status);
   const body = await response.json();
   const answer = body.choices?.[0]?.message?.content?.trim();
   if (!answer) throw new Error("AI 응답 내용이 비어 있습니다.");
@@ -93,7 +101,22 @@ function createHandler(options = {}) {
       return send(response, 200, { answer, mode: "OpenAI Responses API", configured: true });
     } catch (error) {
       const status = error instanceof SyntaxError ? 400 : 502;
-      return send(response, status, { error: status === 400 ? "요청 JSON 형식이 올바르지 않습니다." : "AI 답변을 가져오지 못했습니다. 잠시 후 다시 시도해 주세요." });
+      if (status === 400) return send(response, status, { error: "요청 JSON 형식이 올바르지 않습니다." });
+      if (error instanceof ProviderServiceError) {
+        const messages = {
+          400: "AI 모델 설정 또는 요청 형식을 확인해 주세요.",
+          401: "AI 서비스 인증 정보를 다시 확인해 주세요.",
+          403: "AI 서비스 키의 사용 권한을 확인해 주세요.",
+          404: "설정한 AI 모델 이름을 확인해 주세요.",
+          429: "AI 서비스의 무료 사용 한도에 도달했습니다. 잠시 후 다시 시도해 주세요.",
+        };
+        return send(response, status, {
+          error: messages[error.providerStatus] ?? "AI 서비스 연결 상태를 확인해 주세요.",
+          provider: error.provider,
+          providerStatus: error.providerStatus,
+        });
+      }
+      return send(response, status, { error: "AI 답변을 가져오지 못했습니다. 잠시 후 다시 시도해 주세요." });
     }
   };
 }
@@ -104,4 +127,5 @@ module.exports.createHandler = createHandler;
 module.exports.extractOutput = extractOutput;
 module.exports.fallbackAnswer = fallbackAnswer;
 module.exports.requestGroq = requestGroq;
+module.exports.ProviderServiceError = ProviderServiceError;
 
