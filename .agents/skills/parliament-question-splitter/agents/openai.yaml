@@ -1,4 +1,0 @@
-interface:
-  display_name: "국회 요구서 문항 분리"
-  short_description: "PDF 요구서를 문항목록 CSV와 split.py로 변환"
-  default_prompt: "Use $parliament-question-splitter to create split.py and produce a verified data/문항목록.csv from the PDFs in 원문/."

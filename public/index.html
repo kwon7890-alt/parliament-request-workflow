@@ -1,0 +1,4207 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2028년 정보화예산 편성</title>
+<link rel="icon" href="data:,">
+<style>
+:root{
+  --paper:#fbfbf8;--panel:#ffffff;--grid:#d5dad3;--ink:#17211c;--muted:#66706a;
+  --ledger:#1e5a48;--head:#e6eee8;--head2:#f1f5f1;--sum:#f3f6f2;
+  --input:#fff5c2;--input-line:#c9a400;--fc:#1b4fb3;--fc-bg:#eaf1ff;
+  --down:#b3261e;--warn:#c2410c;--sel:#1e5a48;--selbg:rgba(30,90,72,.10);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#131816;--panel:#1a211e;--grid:#2e3833;--ink:#e6ebe7;--muted:#98a39c;
+    --ledger:#7fd0b4;--head:#1f2c27;--head2:#1a2520;--sum:#1e2824;
+    --input:#3b3410;--input-line:#d6b93a;--fc:#9dbcff;--fc-bg:#182440;
+    --down:#ff8f85;--warn:#ffb074;--sel:#7fd0b4;--selbg:rgba(127,208,180,.14);
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--paper);color:var(--ink);font:14px/1.45 "Pretendard","Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",sans-serif;display:flex;flex-direction:column}
+button,select,input{font:inherit;color:inherit}
+.overview{display:grid;grid-template-columns:minmax(420px,1fr) auto;align-items:center;gap:18px;padding:11px 16px;border-bottom:1px solid var(--grid);background:linear-gradient(100deg,#eef7f2 0,#fff 58%,#fff8ef 100%)}
+.overview-lead{display:flex;align-items:center;gap:12px;min-width:0;white-space:nowrap}
+.overview-lead strong{font-size:15px;letter-spacing:-.02em}
+.overview-lead small{overflow:hidden;text-overflow:ellipsis;color:var(--muted);font-size:11.5px}
+.overview-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;background:#dcefe7;color:#27634f;font-size:11.5px;font-weight:700}
+.overview-badge i{width:6px;height:6px;border-radius:50%;background:#4b997e;box-shadow:0 0 0 4px #4b997e18}
+.overview-metrics{display:flex;align-items:center;gap:7px}
+.overview-metrics>div{min-width:104px;padding:6px 9px;border-left:1px solid #dce5e0}
+.overview-metrics small{display:block;color:var(--muted);font-size:10.5px}
+.overview-metrics b{font-size:18px;font-variant-numeric:tabular-nums;color:#1c3d33}
+.overview-metrics em{margin-left:3px;color:var(--muted);font-size:10.5px;font-style:normal}
+.overview-metrics .need b{color:var(--warn)}
+[data-reveal]{opacity:0;transform:translateY(8px);transition:opacity .42s ease,transform .42s ease}
+[data-reveal].show{opacity:1;transform:none}
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:10px 14px;border-bottom:1px solid var(--grid);background:var(--panel)}
+.top h1{font-size:17px;margin:0;font-weight:700;letter-spacing:-.01em}
+.top .unit{color:var(--muted);font-size:12px}
+.ai-env{padding:3px 8px;border:1px solid #bfd5cc;border-radius:999px;background:#edf6f2;color:#285f4e;font-size:11px;font-weight:600;white-space:nowrap}
+.top .sp{flex:1}
+.ctl{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted)}
+.ctl select,.ctl input{height:28px;border:1px solid var(--grid);background:var(--panel);border-radius:4px;padding:0 6px;color:var(--ink)}
+.ctl input{width:58px;text-align:right;font-variant-numeric:tabular-nums}
+.btn{height:28px;padding:0 10px;border:1px solid var(--grid);background:var(--panel);border-radius:4px;cursor:pointer;font-size:12.5px}
+.btn:hover{border-color:var(--ledger)}
+.btn.main{background:var(--ledger);border-color:var(--ledger);color:var(--paper);font-weight:600}
+.btn.main.saving{opacity:.72;cursor:wait}
+.btn.main.done{animation:save-pop .42s cubic-bezier(.34,1.56,.64,1)}
+.save-status{font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.save-status.dirty{color:var(--warn)}
+.save-status.error{color:var(--down);font-weight:600}
+@keyframes save-pop{50%{transform:scale(1.06)}}
+.btn:focus-visible,.tab:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--sel);outline-offset:1px}
+.badge{font-size:11.5px;padding:2px 7px;border-radius:10px;border:1px solid var(--grid);color:var(--muted)}
+.badge.dirty{border-color:var(--input-line);color:var(--ink);background:var(--input)}
+a.back{font-size:12.5px;color:var(--ledger);text-decoration:none}
+a.back:hover{text-decoration:underline}
+
+.strip{display:flex;gap:14px;align-items:stretch;padding:8px 14px 4px;background:var(--panel);border-bottom:1px solid var(--grid)}
+.strip .who{min-width:170px;max-width:230px;display:flex;flex-direction:column;justify-content:center}
+.strip .who small{color:var(--muted);font-size:11.5px}
+.strip .who b{font-size:13.5px;line-height:1.3}
+.strip .who .big{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em;margin-top:2px}
+.strip .who .chg{font-size:12.5px;font-variant-numeric:tabular-nums}
+.strip .chart{flex:1;overflow-x:auto}
+.strip svg{display:block}
+.neg{color:var(--down)}
+
+.fx{display:flex;align-items:center;gap:0;border-bottom:1px solid var(--grid);background:var(--panel);font-size:12.5px;min-height:30px}
+.fx .ref{width:64px;text-align:center;font-weight:700;color:var(--ledger);border-right:1px solid var(--grid);padding:5px 0;font-variant-numeric:tabular-nums}
+.fx .val{min-width:110px;padding:5px 10px;border-right:1px solid var(--grid);font-variant-numeric:tabular-nums;font-weight:600;text-align:right}
+.fx .src{padding:5px 10px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.fx .src b{color:var(--ink);font-weight:600}
+.fx .src .w{color:var(--warn);font-weight:600}
+
+.wrap{flex:1;overflow:auto;background:var(--panel);min-height:200px}
+table.g{border-collapse:separate;border-spacing:0;font-variant-numeric:tabular-nums;font-size:13px;min-width:100%}
+.g th,.g td{border-right:1px solid var(--grid);border-bottom:1px solid var(--grid);padding:0 8px;height:27px;white-space:nowrap}
+.g thead th{position:sticky;background:var(--head);z-index:3;font-weight:600;font-size:12px;text-align:center}
+.g thead tr.l th{top:0;height:20px;color:var(--muted);font-weight:500;font-size:11px;background:var(--head2)}
+.g thead tr.gr th{top:20px;height:24px;color:var(--ledger);border-bottom-color:transparent}
+.g thead tr.lb th{top:44px;height:26px}
+.g thead th.in{background:var(--input)}
+.g thead th.fc{background:var(--fc-bg);color:var(--fc)}
+.g thead th.gs{border-left:2px solid var(--ledger)}
+.g td.gs{border-left:2px solid var(--grid)}
+.g th.rn{position:sticky;left:0;z-index:2;width:34px;min-width:34px;background:var(--head2);color:var(--muted);font-weight:500;font-size:11px;text-align:center;padding:0}
+.g thead th.rn{z-index:5}
+.g th.nm{position:sticky;left:34px;z-index:2;background:var(--panel);text-align:left;font-weight:500;min-width:250px;max-width:330px;overflow:hidden;border-right:2px solid var(--ledger)}
+.g th.nm .main-label,.g th.nm .sub-label{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.g th.nm .sub-label{margin-top:1px;color:var(--muted);font-size:10.5px;font-weight:400}
+.g tr:has(.sub-label) th,.g tr:has(.sub-label) td{height:36px}
+.g thead th.nm{z-index:5;background:var(--head)}
+.g th.nm .cd{display:inline-block;min-width:66px;color:var(--ledger);font-weight:700;font-size:12px}
+.g tr.lv0 th.nm{font-weight:700}
+.g tr.lv2 th.nm{padding-left:22px}
+.g tr.lv3 th.nm{padding-left:36px;color:var(--muted)}
+.g tr.lv1 th.nm{padding-left:12px}
+.g tr.sum td,.g tr.sum th.nm{background:var(--sum);font-weight:700}
+.g tr.tot td,.g tr.tot th.nm{background:var(--head);font-weight:700;border-top:1px solid var(--ledger)}
+.g tr.memo td,.g tr.memo th.nm{color:var(--muted);font-style:italic}
+.g tr.hd th.nm,.g tr.hd td{background:var(--head2);font-weight:700;color:var(--ledger)}
+.g tr.sep td,.g tr.sep th{border-top:2px solid var(--ledger)}
+.g td{text-align:right;cursor:cell;position:relative;min-width:76px}
+.g tr td.in:not(.ro){background:var(--input)}
+.g td.fc{color:var(--fc);font-style:italic;background:var(--fc-bg)}
+.g td.calc{color:var(--muted)}
+.g td.na{color:var(--muted);font-size:11px;opacity:.75;background-image:repeating-linear-gradient(135deg,transparent 0 5px,var(--head2) 5px 6px)}
+.g td.hint{color:var(--muted);opacity:.7;font-style:italic}
+.g td.dv{font-style:italic}
+.g td.neg{color:var(--down)}
+.g td.warn::after{content:"";position:absolute;top:0;right:0;border:5px solid transparent;border-top-color:var(--warn);border-right-color:var(--warn)}
+.g td.note::before{content:"";position:absolute;top:2px;left:2px;width:4px;height:4px;border-radius:50%;background:var(--ledger);opacity:.55}
+.g td.selr{background-image:linear-gradient(var(--selbg),var(--selbg))}
+.g td.cur{outline:2px solid var(--sel);outline-offset:-2px;z-index:1}
+.g tr.focus th.rn{background:var(--ledger);color:var(--paper)}
+.g td input{position:absolute;inset:0;width:100%;height:100%;border:2px solid var(--sel);background:var(--panel);text-align:right;padding:0 6px;font-variant-numeric:tabular-nums;outline:none}
+
+.foot{display:flex;align-items:center;gap:0;border-top:1px solid var(--grid);background:var(--head2);min-height:34px;overflow-x:auto}
+.tab{border:0;border-right:1px solid var(--grid);background:transparent;padding:0 14px;height:34px;cursor:pointer;font-size:12.5px;color:var(--muted);white-space:nowrap}
+.tab.on{background:var(--panel);color:var(--ledger);font-weight:700;box-shadow:inset 0 -3px 0 var(--ledger)}
+.foot .desc{padding:0 12px;color:var(--muted);font-size:12px;white-space:nowrap}
+.foot .sp{flex:1}
+.foot .stat{padding:0 14px;font-size:12.5px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;padding:5px 14px;font-size:11.5px;color:var(--muted);background:var(--panel);border-top:1px solid var(--grid)}
+.legend i{display:inline-block;width:14px;height:10px;border:1px solid var(--grid);margin-right:4px;vertical-align:-1px}
+.legend .i-in{background:var(--input)}.legend .i-fc{background:var(--fc-bg)}
+.legend .i-na{background-image:repeating-linear-gradient(135deg,transparent 0 3px,var(--muted) 3px 4px)}
+.toast{position:fixed;left:50%;bottom:54px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:7px 14px;border-radius:4px;font-size:12.5px;opacity:0;pointer-events:none;transition:opacity .15s}
+.toast.on{opacity:1}
+@media (max-width:1100px){.overview{grid-template-columns:1fr;gap:7px}.overview-lead{white-space:normal}.overview-metrics{overflow-x:auto}.overview-metrics>div{min-width:116px}}
+@media(prefers-reduced-motion:reduce){.btn.main.done{animation:none}}
+@media (max-width:720px){.overview{padding:9px 11px}.overview-lead{flex-wrap:wrap}.overview-lead small{width:100%}.strip .who{min-width:120px}.g th.nm{min-width:170px;max-width:190px}.fx .val{min-width:80px}}
+@media(prefers-reduced-motion:reduce){[data-reveal]{opacity:1;transform:none;transition:none}.overview-badge i{box-shadow:none}}
+@media print{.overview,.top .ctl,.btn,.foot,.strip,.fx,.legend{display:none}.wrap{overflow:visible}}
+
+</style>
+</head>
+<body>
+<section class="overview" aria-label="예산업무 진행 요약" data-reveal>
+  <div class="overview-lead">
+    <span class="overview-badge"><i></i> 2027년 4차 검증 완료</span>
+    <strong>다음 작업: 5차(국회) 금액 확정</strong>
+    <small>확정값은 2028년 요구액 기준으로 이어집니다.</small>
+  </div>
+  <div class="overview-metrics">
+    <div><small>현재 기준액</small><b id="ovCurrent">2,901</b><em>백만원</em></div>
+    <div class="need"><small>5차 입력 필요</small><b id="ovFifth">4</b><em>개 항목</em></div>
+    <div><small>2028 입력 필요</small><b id="ovNext">4</b><em>개 항목</em></div>
+    <div><small>확인할 검산</small><b id="ovFindings">48</b><em>건</em></div>
+  </div>
+</section>
+<header class="top">
+  <h1>2028년 정보화예산 편성</h1><span class="unit">단위: 백만원</span>
+  <span class="ai-env" title="폐쇄망 목표 운영 환경">Gemma 4 31B · BM25/키워드/Fuse RAG · RTX PRO 6000</span>
+  <span id="mode" class="badge"></span>
+  <span class="sp"></span>
+  <label class="ctl">2028 예측 <select id="method">
+    <option value="growth">증가율 적용</option><option value="flat">2027 동결</option>
+    <option value="mid">중기계획(없으면 증가율)</option><option value="trend">최근 예산 추세</option></select></label>
+  <label class="ctl">증가율 <input id="growth" type="number" step="0.5" inputmode="decimal">%</label>
+  <button class="btn" id="fill" title="비어 있는 2028 요구 칸에 예측값을 넣습니다">예측값을 2028 요구에 채우기</button>
+  <button class="btn" id="copy" title="선택 범위가 없으면 현재 표 전체를 복사합니다">표 복사</button>
+  <button class="btn" id="csv">CSV 저장</button>
+  <button class="btn main" id="save">입력값 저장</button>
+  <span class="save-status" id="saveStatus" aria-live="polite">현재 --:--:-- · 자동저장 대기</span>
+  <a class="back" href="/index.html?view=assistant">AI 근거 질의</a>
+  <a class="back" id="back" href="/index.html">업무 홈·승인 화면</a>
+</header>
+<section class="strip"><div class="who" id="who"></div><div class="chart" id="chart"></div></section>
+<div class="fx"><div class="ref" id="fxref"></div><div class="val" id="fxval"></div><div class="src" id="fxsrc"></div></div>
+<div class="wrap" id="wrap" tabindex="0"></div>
+<div class="legend">
+  <span><i class="i-in"></i>직접 입력 칸</span><span><i class="i-fc"></i>예측(자동 계산)</span>
+  <span><i class="i-na"></i>미확인(원본에 없음)</span><span>기울임 = 하위 합계로 계산한 값</span>
+  <span>빨간 모서리 = 검산 불일치</span><span>△ = 감액</span>
+  <span>방향키 이동 · Enter/숫자 입력 · 드래그 범위 선택 · Ctrl+C 복사</span>
+</div>
+<footer class="foot"><div id="tabs" style="display:flex"></div><span class="desc" id="desc"></span><span class="sp"></span><span class="stat" id="stat"></span></footer>
+<div class="toast" id="toast"></div>
+<script>window.__FLOW__={
+ "title": "재외동포청 정보화예산 숫자판",
+ "unit": "백만원",
+ "built": "2026-11-10",
+ "sources": {
+  "D4": {
+   "zip": "27년 예산심의과정 제출 관련 자료 모음.zip",
+   "file": "[4차심의결과]49_동포청-27예산안-최종-돈표.hwpx",
+   "where": "돈표"
+  },
+  "D3": {
+   "zip": "27년 예산심의과정 제출 관련 자료 모음.zip",
+   "file": "[3차심의결과]49.동포청_27예산안-돈표.hwp",
+   "where": "돈표"
+  },
+  "D1": {
+   "zip": "27년 예산심의과정 제출 관련 자료 모음.zip",
+   "file": "[1차심의결과]2. 재외동포청-27년 예산안-예산 1차-정보시스템 구축 및 운영(정보화).hwp",
+   "where": "돈표"
+  },
+  "A1": {
+   "zip": "27년 예산심의과정 제출 관련 자료 모음.zip",
+   "file": "[1차심의자료](동포청) 2027년도 예산안 요구서(1차).hwpx",
+   "where": "요구 총괄표·한도내/외 표·결산연혁·중기계획"
+  },
+  "A2": {
+   "zip": "27년 예산심의과정 제출 관련 자료 모음.zip",
+   "file": "[2차심의자료]재외동포청.hwpx",
+   "where": "현반영·추가제기 표, 중기 소요 표"
+  },
+  "A3": {
+   "zip": "27년 예산심의과정 제출 관련 자료 모음.zip",
+   "file": "[3차심의자료]3차심의 사업요구서★.hwpx",
+   "where": "총괄표(현반영·추가요구)"
+  },
+  "A4": {
+   "zip": "27년 예산심의과정 제출 관련 자료 모음.zip",
+   "file": "[4차심의자료][동포청]4차심의 참고자료_보안관제 참고자료 보완_산출내역 조정.hwpx",
+   "where": "총괄표(현반영·추가요구·최종)"
+  },
+  "G7": {
+   "zip": "2027년 예산안 사업설명자료(정보화).zip",
+   "file": "정보시스템 구축 및 운영(정보화)(7121-303)/2027년도 예산안 공통요구자료(III-1)_정보시스템 구축 및 운영(정보화)(7121-303).hwp",
+   "where": "사업 총괄표·집행현황"
+  },
+  "G5": {
+   "zip": "2027년 예산안 사업설명자료(정보화).zip",
+   "file": "온라인 영사민원 시스템 구축 및 운영(정보화)(5036-302)/[붙임_1]_2027년도_예산안_공통요구자료_Ⅱ-1_온라인 영사민원 시스템 구축 및 운영(정보화)(5036-302).hwp",
+   "where": "사업 총괄표·연도별 결산 연혁"
+  },
+  "G3": {
+   "zip": "2027년 예산안 사업설명자료(정보화).zip",
+   "file": "재외동포 디지털 통합 플랫폼 구축(정보화)(5031-303)/2027년도 예산안 공통요구자료(III-1)_재외동포 디지털 통합 플랫폼 구축(정보화)(5031-303).hwp",
+   "where": "사업 총괄표"
+  },
+  "P": {
+   "zip": "[답변양식]정보화TF_박성준의원_예산관련 추가.zip",
+   "file": "[답변양식]정보화TF_박성준의원_예산관련 추가.hwp",
+   "where": "보안관제 차수별 요구·결과 표"
+  },
+  "R25a": {
+   "zip": "[답변양식]정보화TF_박성준의원_예산관련 추가.zip",
+   "file": "[예산요구]예산안 요구서_1차(정보시스템 구축 및 운영).hwpx",
+   "where": "한도내/외 요구 표"
+  },
+  "R25c1": {
+   "zip": "[답변양식]정보화TF_박성준의원_예산관련 추가.zip",
+   "file": "[심의결과]재외동포청-25예산-예산1차-정보시스템 구축 및 운영(정보화).hwp",
+   "where": "돈표"
+  },
+  "R25c2": {
+   "zip": "[답변양식]정보화TF_박성준의원_예산관련 추가.zip",
+   "file": "[심의결과]재외동포청-25예산-예산2차-정보시스템 구축 및 운영(정보화).hwp",
+   "where": "돈표"
+  },
+  "G25": {
+   "zip": "re_ 2025년도 예산안 공통요구자료(II-1~II-3) 업데이트 _정보화(정부안)_24101701383260.zip",
+   "file": "2025년도_예산안_공통요구자료_Ⅱ-1_(7121-303)_정보화.hwp",
+   "where": "사업 총괄표·결산 연혁"
+  },
+  "T26in": {
+   "zip": "Fwd_Re_예산요구서 송부(수정)_260112090111674.zip",
+   "file": "한도내/1. 총괄표(재외동포청).hwpx",
+   "where": "표1"
+  },
+  "T26out": {
+   "zip": "Fwd_Re_예산요구서 송부(수정)_260112090111674.zip",
+   "file": "한도외/1. 총괄표(재외동포청)(한도외).hwpx",
+   "where": "표1"
+  },
+  "E24": {
+   "zip": "[16-1번] 예산 사업설명자료.zip",
+   "file": "2024년도 확정예산 사업설명자료(Ⅱ-1).hwp",
+   "where": "일반회계 세출예산 총괄표"
+  },
+  "E25": {
+   "zip": "[16-1번] 예산 사업설명자료.zip",
+   "file": "2025년도 확정예산 사업설명자료(Ⅱ-1).hwp",
+   "where": "일반회계 세출예산 총괄표"
+  }
+ },
+ "defaults": {
+  "method": "growth",
+  "growth": 5.0,
+  "growthNote": "1차심의자료 중기계획 산출근거 '전년 대비 5% 증액'"
+ },
+ "sheets": [
+  {
+   "id": "years",
+   "title": "연도 흐름",
+   "desc": "사업코드별 2023~2028 예산·결산·요구",
+   "cols": [
+    {
+     "id": "y23b",
+     "g": "2023",
+     "label": "예산"
+    },
+    {
+     "id": "y23s",
+     "g": "2023",
+     "label": "결산",
+     "nochart": true
+    },
+    {
+     "id": "y24b",
+     "g": "2024",
+     "label": "예산"
+    },
+    {
+     "id": "y24s",
+     "g": "2024",
+     "label": "결산",
+     "nochart": true
+    },
+    {
+     "id": "y25b",
+     "g": "2025",
+     "label": "예산"
+    },
+    {
+     "id": "y25s",
+     "g": "2025",
+     "label": "결산",
+     "nochart": true
+    },
+    {
+     "id": "y26b",
+     "g": "2026",
+     "label": "예산"
+    },
+    {
+     "id": "y26e",
+     "g": "2026",
+     "label": "집행(7월말)",
+     "nochart": true
+    },
+    {
+     "id": "y27r",
+     "g": "2027",
+     "label": "요구",
+     "nochart": true
+    },
+    {
+     "id": "y27g",
+     "g": "2027",
+     "label": "정부안(4차)"
+    },
+    {
+     "id": "y27n",
+     "g": "2027",
+     "label": "국회 확정",
+     "kind": "input"
+    },
+    {
+     "id": "d27",
+     "g": "2027",
+     "label": "증감(27−26)",
+     "kind": "calc",
+     "calc": {
+      "op": "diff",
+      "a": [
+       "y27n",
+       "y27g"
+      ],
+      "b": [
+       "y26b"
+      ]
+     }
+    },
+    {
+     "id": "y28m",
+     "g": "2028",
+     "label": "중기 요구",
+     "nochart": true
+    },
+    {
+     "id": "y28f",
+     "g": "2028",
+     "label": "예측",
+     "kind": "forecast",
+     "base": [
+      "y27n",
+      "y27g"
+     ],
+     "mid": "y28m",
+     "hist": [
+      "y24b",
+      "y25b",
+      "y26b"
+     ]
+    },
+    {
+     "id": "y28r",
+     "g": "2028",
+     "label": "요구",
+     "kind": "input",
+     "hint": "y28f"
+    },
+    {
+     "id": "d28",
+     "g": "2028",
+     "label": "증감(28−27)",
+     "kind": "calc",
+     "calc": {
+      "op": "diff",
+      "a": [
+       "y28r",
+       "y28f"
+      ],
+      "b": [
+       "y27n",
+       "y27g"
+      ]
+     }
+    }
+   ],
+   "rows": [
+    {
+     "id": "jong",
+     "label": "종로 소계",
+     "level": 0,
+     "sumOf": [
+      "5036-302",
+      "5031-303"
+     ],
+     "cells": {}
+    },
+    {
+     "id": "5036-302",
+     "code": "5036-302",
+     "label": "온라인 영사민원 시스템 구축 및 운영",
+     "level": 1,
+     "cells": {
+      "y23b": {
+       "v": 8364,
+       "s": "G5",
+       "n": "결산 연혁표 2023 예산액(=구코드 7131-301+302 합 4,047+4,317)"
+      },
+      "y23s": {
+       "v": 7638,
+       "s": "G5",
+       "n": "집행액. 예산현액 8,480(예비비 116 포함), 이월 671, 불용 171"
+      },
+      "y24b": {
+       "v": 11657,
+       "s": "E25",
+       "n": "=구코드 7131-301+302 합 4,703+6,954"
+      },
+      "y24s": {
+       "v": 11751,
+       "s": "G5",
+       "n": "집행액. 예산현액 12,328(전년이월 671 포함)"
+      },
+      "y25b": {
+       "v": 6253,
+       "s": "E25"
+      },
+      "y25s": {
+       "v": 6186,
+       "s": "G5"
+      },
+      "y26b": {
+       "v": 6358,
+       "s": "G5"
+      },
+      "y26e": {
+       "v": 3500,
+       "s": "G5",
+       "n": "2026.7월말 집행액"
+      },
+      "y27r": {
+       "v": null,
+       "n": "요구안 금액 미확인(2차심의자료에 억원 단위 64로만 표기)"
+      },
+      "y27g": {
+       "v": 10567,
+       "s": "G5",
+       "n": "조정안(B). 영사정보 4,081 + 인증센터 1,602 + G4K 노후교체 4,368 + 사업운영 516"
+      },
+      "y27n": {
+       "link": "n27.5036-302"
+      },
+      "y28r": {
+       "link": "r28.5036-302"
+      }
+     }
+    },
+    {
+     "id": "7131-301",
+     "code": "※ 7131-301",
+     "label": "재외공관 영사정보시스템 운영 (구 코드)",
+     "level": 2,
+     "memo": true,
+     "cells": {
+      "y23b": {
+       "v": 4047,
+       "s": "E24"
+      },
+      "y24b": {
+       "v": 4703,
+       "s": "E24"
+      }
+     }
+    },
+    {
+     "id": "7131-302",
+     "code": "※ 7131-302",
+     "label": "디지털 영사민원시스템 구축 (구 코드)",
+     "level": 2,
+     "memo": true,
+     "cells": {
+      "y23b": {
+       "v": 4317,
+       "s": "E24"
+      },
+      "y24b": {
+       "v": 6954,
+       "s": "E24"
+      }
+     }
+    },
+    {
+     "id": "5031-303",
+     "code": "5031-303",
+     "label": "재외동포 디지털 통합 플랫폼 구축 (2027 신규)",
+     "level": 1,
+     "cells": {
+      "y23b": {
+       "v": 0,
+       "s": "G3",
+       "n": "2027 신규사업(문서 '-' 표기)"
+      },
+      "y23s": {
+       "v": 0,
+       "s": "G3",
+       "n": "2027 신규사업(문서 '-' 표기)"
+      },
+      "y24b": {
+       "v": 0,
+       "s": "G3",
+       "n": "2027 신규사업(문서 '-' 표기)"
+      },
+      "y24s": {
+       "v": 0,
+       "s": "G3",
+       "n": "2027 신규사업(문서 '-' 표기)"
+      },
+      "y25b": {
+       "v": 0,
+       "s": "G3",
+       "n": "2027 신규사업(문서 '-' 표기)"
+      },
+      "y25s": {
+       "v": 0,
+       "s": "G3",
+       "n": "2027 신규사업(문서 '-' 표기)"
+      },
+      "y26b": {
+       "v": 0,
+       "s": "G3",
+       "n": "2027 신규사업(문서 '-' 표기)"
+      },
+      "y26e": {
+       "v": 0,
+       "s": "G3",
+       "n": "2027 신규사업(문서 '-' 표기)"
+      },
+      "y27r": {
+       "v": 3000,
+       "s": "G3",
+       "n": "요구안"
+      },
+      "y27g": {
+       "v": 3421,
+       "s": "G3",
+       "n": "조정안. 플랫폼 3,400 + 조달수수료 21"
+      },
+      "y27n": {
+       "link": "n27.5031-303"
+      },
+      "y28r": {
+       "link": "r28.5031-303"
+      }
+     }
+    },
+    {
+     "id": "song",
+     "label": "송도 소계",
+     "level": 0,
+     "sumOf": [
+      "7121-303"
+     ],
+     "cells": {}
+    },
+    {
+     "id": "7121-303",
+     "code": "7121-303",
+     "label": "정보시스템 구축 및 운영",
+     "level": 1,
+     "sumOf": [
+      "detail-210-01",
+      "detail-210-14",
+      "detail-210-15",
+      "detail-430-01"
+     ],
+     "cells": {
+      "y23b": {
+       "v": 1543,
+       "s": "A1",
+       "n": "2023 예비비 편성(6.5. 개청)"
+      },
+      "y23s": {
+       "v": 1326,
+       "s": "A1",
+       "n": "집행. 불용 216"
+      },
+      "y24b": {
+       "v": 2334,
+       "s": "A1"
+      },
+      "y24s": {
+       "v": 2287,
+       "s": "A1",
+       "n": "집행. 불용 47"
+      },
+      "y25b": {
+       "v": 1900,
+       "s": "A1"
+      },
+      "y25s": {
+       "v": 1899,
+       "s": "A1",
+       "n": "집행. 불용 1"
+      },
+      "y26b": {
+       "v": 4601,
+       "s": "D4",
+       "n": "통합유지관리 1,900 + 보안관제센터 2,701"
+      },
+      "y26e": {
+       "v": 2531,
+       "s": "G7",
+       "n": "2026.7월말 집행액"
+      },
+      "y27r": {
+       "v": 2689,
+       "s": "D1",
+       "n": "지출한도 내 요구. 한도외 추가 1,075 포함 실요구 3,764"
+      },
+      "y27g": {
+       "v": 2901,
+       "s": "D4",
+       "n": "4차 심의결과(최종 돈표)"
+      },
+      "y27n": {
+       "link": "n27.7121-303"
+      },
+      "y28m": {
+       "v": 3946,
+       "s": "A2",
+       "n": "2차심의자료 중기 소요 요구(’28년)"
+      },
+      "y28r": {
+       "link": "r28.7121-303"
+      }
+     }
+    },
+    {
+     "id": "detail-210-01",
+     "code": "210-01",
+     "label": "일반수용비 · 지능형 업무관리플랫폼 구독 · 공공데이터 품질관리",
+     "level": 2,
+     "cells": {
+      "y27g": {
+       "v": 0,
+       "s": "D4",
+       "n": "3차 요구: 지능형 업무관리플랫폼 구독 48 + 공공데이터 품질관리 80. 4차 결과 미반영"
+      }
+     }
+    },
+    {
+     "id": "detail-210-14",
+     "code": "210-14",
+     "label": "일반용역비 · 보안관제센터 운영",
+     "level": 2,
+     "cells": {
+      "y27g": {
+       "v": 513,
+       "s": "D4",
+       "n": "4차 심의결과 돈표: 보안관제센터 운영"
+      }
+     }
+    },
+    {
+     "id": "detail-210-15",
+     "code": "210-15",
+     "label": "관리용역비 · 정보시스템 통합유지관리",
+     "level": 2,
+     "cells": {
+      "y27g": {
+       "v": 2291,
+       "s": "D4",
+       "n": "4차 심의결과 돈표: 통합유지관리 관리용역비"
+      }
+     }
+    },
+    {
+     "id": "detail-430-01",
+     "code": "430-01",
+     "label": "자산취득비 · 정보시스템 통합유지관리(PC 및 SW구매)",
+     "level": 2,
+     "cells": {
+      "y27g": {
+       "v": 97,
+       "s": "D4",
+       "n": "4차 심의결과 돈표: PC 및 SW구매"
+      }
+     }
+    },
+    {
+     "id": "7131-303",
+     "code": "※ 7131-303",
+     "label": "정보시스템 구축 및 운영 (구 코드)",
+     "level": 2,
+     "memo": true,
+     "cells": {
+      "y23b": {
+       "v": 0,
+       "s": "E24",
+       "n": "문서 '-' 표기"
+      },
+      "y24b": {
+       "v": 2334,
+       "s": "E24",
+       "n": "7121-303의 2024 예산과 동일 금액"
+      }
+     }
+    },
+    {
+     "id": "total",
+     "label": "정보화 총계",
+     "level": 0,
+     "total": true,
+     "sumOf": [
+      "5036-302",
+      "5031-303",
+      "7121-303"
+     ],
+     "cells": {}
+    }
+   ],
+   "focus": "total"
+  },
+  {
+   "id": "stage27",
+   "title": "2027 차수",
+   "desc": "7121-303 요구 → 1~4차 심의 → 국회",
+   "cols": [
+    {
+     "id": "b26",
+     "g": "2026",
+     "label": "본예산"
+    },
+    {
+     "id": "rin",
+     "g": "요구",
+     "label": "한도내"
+    },
+    {
+     "id": "rout",
+     "g": "요구",
+     "label": "한도외 추가",
+     "nochart": true
+    },
+    {
+     "id": "rall",
+     "g": "요구",
+     "label": "실요구"
+    },
+    {
+     "id": "c1",
+     "g": "1차",
+     "label": "검토"
+    },
+    {
+     "id": "a2",
+     "g": "2차",
+     "label": "추가제기",
+     "nochart": true
+    },
+    {
+     "id": "c2",
+     "g": "2차",
+     "label": "검토"
+    },
+    {
+     "id": "a3",
+     "g": "3차",
+     "label": "추가제기",
+     "nochart": true
+    },
+    {
+     "id": "c3",
+     "g": "3차",
+     "label": "검토"
+    },
+    {
+     "id": "a4",
+     "g": "4차",
+     "label": "추가요구",
+     "nochart": true
+    },
+    {
+     "id": "c4",
+     "g": "4차",
+     "label": "검토(정부안)"
+    },
+    {
+     "id": "n5",
+     "g": "5차",
+     "label": "국회 확정",
+     "kind": "input"
+    },
+    {
+     "id": "d",
+     "g": "결과",
+     "label": "증감(최종−26)",
+     "kind": "calc",
+     "calc": {
+      "op": "diff",
+      "a": [
+       "n5",
+       "c4"
+      ],
+      "b": [
+       "b26"
+      ]
+     }
+    },
+    {
+     "id": "rt",
+     "g": "결과",
+     "label": "반영률(최종/실요구)",
+     "kind": "calc",
+     "calc": {
+      "op": "pct",
+      "a": [
+       "n5",
+       "c4"
+      ],
+      "b": [
+       "rall"
+      ]
+     }
+    }
+   ],
+   "rows": [
+    {
+     "id": "tot",
+     "label": "정보시스템 구축 및 운영 (7121-303)",
+     "cells": {
+      "b26": {
+       "v": 4601,
+       "s": "A1"
+      },
+      "rin": {
+       "v": 2689,
+       "s": "A1"
+      },
+      "rout": {
+       "v": 1075,
+       "s": "A1"
+      },
+      "rall": {
+       "v": 3764,
+       "s": "A1"
+      },
+      "c1": {
+       "v": 2031,
+       "s": "D1"
+      },
+      "a2": {
+       "v": 1733,
+       "s": "A2"
+      },
+      "c2": {
+       "v": 2031,
+       "s": "A3",
+       "n": "3차심의자료의 현반영(a) 값 = 2차 심의결과"
+      },
+      "a3": {
+       "v": 1685,
+       "s": "A3"
+      },
+      "c3": {
+       "v": 2730,
+       "s": "D3"
+      },
+      "a4": {
+       "v": 352,
+       "s": "A4"
+      },
+      "c4": {
+       "v": 2901,
+       "s": "D4"
+      },
+      "n5": {
+       "link": "n27.7121-303"
+      }
+     },
+     "level": 0,
+     "total": true,
+     "sumOf": [
+      "m",
+      "s",
+      "p",
+      "q"
+     ],
+     "link_n5": "n27.7121-303"
+    },
+    {
+     "id": "m",
+     "label": "정보시스템 통합유지관리",
+     "cells": {
+      "b26": {
+       "v": 1900,
+       "s": "A1"
+      },
+      "rin": {
+       "v": 1689,
+       "s": "A1"
+      },
+      "rout": {
+       "v": 947,
+       "s": "A1",
+       "n": "산하기관 통폐합 관련 유지관리 추가요구"
+      },
+      "rall": {
+       "v": 2636,
+       "s": "A1"
+      },
+      "c1": {
+       "v": 1689,
+       "s": "D1"
+      },
+      "a2": {
+       "v": 947,
+       "s": "A2"
+      },
+      "c2": {
+       "v": 1689,
+       "s": "A3",
+       "n": "3차심의자료의 현반영(a) 값 = 2차 심의결과"
+      },
+      "a3": {
+       "v": 947,
+       "s": "A3"
+      },
+      "c3": {
+       "v": 2388,
+       "s": "D3"
+      },
+      "a4": {
+       "v": 0,
+       "s": "A4"
+      },
+      "c4": {
+       "v": 2388,
+       "s": "D4"
+      }
+     },
+     "level": 1
+    },
+    {
+     "id": "s",
+     "label": "보안관제센터 운영",
+     "cells": {
+      "b26": {
+       "v": 2701,
+       "s": "A1"
+      },
+      "rin": {
+       "v": 1000,
+       "s": "A1"
+      },
+      "rout": {
+       "v": 0,
+       "s": "A1"
+      },
+      "rall": {
+       "v": 1000,
+       "s": "A1"
+      },
+      "c1": {
+       "v": 342,
+       "s": "P"
+      },
+      "a2": {
+       "v": 658,
+       "s": "A2"
+      },
+      "c2": {
+       "v": 342,
+       "s": "P"
+      },
+      "a3": {
+       "v": 658,
+       "s": "A3"
+      },
+      "c3": {
+       "v": 342,
+       "s": "P"
+      },
+      "a4": {
+       "v": 352,
+       "s": "A4"
+      },
+      "c4": {
+       "v": 513,
+       "s": "P",
+       "n": "기반영 342 + 171"
+      }
+     },
+     "level": 1
+    },
+    {
+     "id": "p",
+     "label": "지능형 업무관리플랫폼 구독 (신규)",
+     "cells": {
+      "b26": {
+       "v": 0,
+       "s": "A1"
+      },
+      "rin": {
+       "v": 0,
+       "s": "A1"
+      },
+      "rout": {
+       "v": 48,
+       "s": "A1"
+      },
+      "rall": {
+       "v": 48,
+       "s": "A1"
+      },
+      "c1": {
+       "v": 0,
+       "s": "D1",
+       "n": "1차 돈표에 항목 없음(미반영)"
+      },
+      "a2": {
+       "v": 48,
+       "s": "A2"
+      },
+      "c2": {
+       "v": 0,
+       "s": "A3"
+      },
+      "a3": {
+       "v": 0,
+       "s": "A3",
+       "n": "3차 추가제기 목록에서 제외"
+      },
+      "c3": {
+       "v": 0,
+       "s": "D3",
+       "n": "돈표에 항목 없음"
+      },
+      "a4": {
+       "v": 0,
+       "s": "A4"
+      },
+      "c4": {
+       "v": 0,
+       "s": "D4",
+       "n": "돈표에 항목 없음"
+      }
+     },
+     "level": 1
+    },
+    {
+     "id": "q",
+     "label": "공공데이터 품질관리 (신규)",
+     "cells": {
+      "b26": {
+       "v": 0,
+       "s": "A1"
+      },
+      "rin": {
+       "v": 0,
+       "s": "A1"
+      },
+      "rout": {
+       "v": 80,
+       "s": "A1"
+      },
+      "rall": {
+       "v": 80,
+       "s": "A1"
+      },
+      "c1": {
+       "v": 0,
+       "s": "D1",
+       "n": "1차 돈표에 항목 없음(미반영)"
+      },
+      "a2": {
+       "v": 80,
+       "s": "A2"
+      },
+      "c2": {
+       "v": 0,
+       "s": "A3"
+      },
+      "a3": {
+       "v": 80,
+       "s": "A3"
+      },
+      "c3": {
+       "v": 0,
+       "s": "D3",
+       "n": "돈표에 항목 없음"
+      },
+      "a4": {
+       "v": 0,
+       "s": "A4"
+      },
+      "c4": {
+       "v": 0,
+       "s": "D4",
+       "n": "돈표에 항목 없음"
+      }
+     },
+     "level": 1
+    }
+   ],
+   "focus": "tot"
+  },
+  {
+   "id": "all27",
+   "title": "정보화 전체 3·4차",
+   "desc": "내역사업별 현반영·추가요구·정부안",
+   "cols": [
+    {
+     "id": "b26",
+     "g": "2026",
+     "label": "본예산"
+    },
+    {
+     "id": "h3",
+     "g": "3차",
+     "label": "현반영"
+    },
+    {
+     "id": "a3",
+     "g": "3차",
+     "label": "추가요구",
+     "nochart": true
+    },
+    {
+     "id": "t3",
+     "g": "3차",
+     "label": "요구 합계",
+     "kind": "calc",
+     "calc": {
+      "op": "add",
+      "a": [
+       "h3"
+      ],
+      "b": [
+       "a3"
+      ]
+     }
+    },
+    {
+     "id": "h4",
+     "g": "4차",
+     "label": "현반영"
+    },
+    {
+     "id": "a4",
+     "g": "4차",
+     "label": "추가요구",
+     "nochart": true
+    },
+    {
+     "id": "g",
+     "g": "정부안",
+     "label": "최종"
+    },
+    {
+     "id": "n5",
+     "g": "5차",
+     "label": "국회 확정",
+     "kind": "input"
+    },
+    {
+     "id": "d",
+     "g": "결과",
+     "label": "증감(최종−26)",
+     "kind": "calc",
+     "calc": {
+      "op": "diff",
+      "a": [
+       "n5",
+       "g"
+      ],
+      "b": [
+       "b26"
+      ]
+     }
+    }
+   ],
+   "rows": [
+    {
+     "id": "tot",
+     "label": "정보화 합계",
+     "level": 0,
+     "total": true,
+     "sumOf": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "h",
+      "i"
+     ],
+     "cells": {
+      "b26": {
+       "v": 5976,
+       "s": "A3"
+      },
+      "h3": {
+       "v": 3633,
+       "s": "A3"
+      },
+      "a3": {
+       "v": 16466,
+       "s": "A3"
+      },
+      "h4": {
+       "v": 12132,
+       "s": "A4"
+      },
+      "a4": {
+       "v": 352,
+       "s": "A4"
+      }
+     }
+    },
+    {
+     "id": "a",
+     "label": "재외동포 디지털 통합 플랫폼 구축",
+     "level": 1,
+     "cells": {
+      "b26": {
+       "v": 0,
+       "s": "A3"
+      },
+      "h3": {
+       "v": 0,
+       "s": "A3"
+      },
+      "a3": {
+       "v": 4669,
+       "s": "A3"
+      },
+      "h4": {
+       "v": 3400,
+       "s": "A4"
+      },
+      "a4": {
+       "v": 0,
+       "s": "A4"
+      },
+      "g": {
+       "v": 3400,
+       "s": "G3",
+       "n": "조달수수료 21 별도 → 세부사업 3,421"
+      }
+     }
+    },
+    {
+     "id": "b",
+     "label": "재외국민 통합전자행정 시스템 노후 장비 교체",
+     "level": 1,
+     "cells": {
+      "b26": {
+       "v": 0,
+       "s": "A3"
+      },
+      "h3": {
+       "v": 0,
+       "s": "A3"
+      },
+      "a3": {
+       "v": 6200,
+       "s": "A3"
+      },
+      "h4": {
+       "v": 4400,
+       "s": "A4"
+      },
+      "a4": {
+       "v": 0,
+       "s": "A4"
+      },
+      "g": {
+       "v": 4368,
+       "s": "G5"
+      }
+     }
+    },
+    {
+     "id": "c",
+     "label": "정보시스템 통합 유지관리",
+     "level": 1,
+     "cells": {
+      "b26": {
+       "v": 1900,
+       "s": "A3"
+      },
+      "h3": {
+       "v": 1689,
+       "s": "A3"
+      },
+      "a3": {
+       "v": 947,
+       "s": "A3"
+      },
+      "h4": {
+       "v": 2388,
+       "s": "A4"
+      },
+      "a4": {
+       "v": 0,
+       "s": "A4"
+      },
+      "g": {
+       "v": 2388,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "d",
+     "label": "동포청 보안관제센터 운영",
+     "level": 1,
+     "cells": {
+      "b26": {
+       "v": 2701,
+       "s": "A3"
+      },
+      "h3": {
+       "v": 342,
+       "s": "A3"
+      },
+      "a3": {
+       "v": 658,
+       "s": "A3"
+      },
+      "h4": {
+       "v": 342,
+       "s": "A4"
+      },
+      "a4": {
+       "v": 352,
+       "s": "A4"
+      },
+      "g": {
+       "v": 513,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "e",
+     "label": "재외국민등록 안내 시스템 구축",
+     "level": 1,
+     "cells": {
+      "b26": {
+       "v": 0,
+       "s": "A3"
+      },
+      "h3": {
+       "v": 0,
+       "s": "A3"
+      },
+      "a3": {
+       "v": 687,
+       "s": "A3"
+      },
+      "h4": {
+       "v": 0,
+       "s": "A4"
+      },
+      "a4": {
+       "v": 0,
+       "s": "A4"
+      },
+      "g": {
+       "v": 0,
+       "s": "A4"
+      }
+     }
+    },
+    {
+     "id": "f",
+     "label": "재외동포인증센터 구축 및 운영",
+     "level": 1,
+     "cells": {
+      "b26": {
+       "v": 1375,
+       "s": "A3"
+      },
+      "h3": {
+       "v": 1602,
+       "s": "A3"
+      },
+      "a3": {
+       "v": 3205,
+       "s": "A3"
+      },
+      "h4": {
+       "v": 1602,
+       "s": "A4"
+      },
+      "a4": {
+       "v": 0,
+       "s": "A4"
+      },
+      "g": {
+       "v": 1602,
+       "s": "G5"
+      }
+     }
+    },
+    {
+     "id": "h",
+     "label": "공공데이터 품질 관리",
+     "level": 1,
+     "cells": {
+      "b26": {
+       "v": 0,
+       "s": "A3"
+      },
+      "h3": {
+       "v": 0,
+       "s": "A3"
+      },
+      "a3": {
+       "v": 80,
+       "s": "A3"
+      },
+      "h4": {
+       "v": 0,
+       "s": "A4"
+      },
+      "a4": {
+       "v": 0,
+       "s": "A4"
+      },
+      "g": {
+       "v": 0,
+       "s": "A4"
+      }
+     }
+    },
+    {
+     "id": "i",
+     "label": "(플랫폼 구축) 조달수수료",
+     "level": 1,
+     "cells": {
+      "b26": {
+       "v": 0,
+       "s": "A3"
+      },
+      "h3": {
+       "v": 0,
+       "s": "A3"
+      },
+      "a3": {
+       "v": 20,
+       "s": "A3"
+      },
+      "h4": {
+       "v": 0,
+       "s": "A4"
+      },
+      "a4": {
+       "v": 0,
+       "s": "A4"
+      },
+      "g": {
+       "v": 21,
+       "s": "G3"
+      }
+     }
+    }
+   ],
+   "focus": "tot",
+   "note": "합계 26 본예산 5,976 = 7121-303(4,601) + 인증센터(1,375). 5036-302의 영사정보시스템 운영(4,502)·사업운영(481)은 이 총괄표 범위 밖."
+  },
+  {
+   "id": "don",
+   "title": "돈표 내역·비목",
+   "desc": "7121-303 내역사업·비목별 심의 흐름",
+   "cols": [
+    {
+     "id": "b25",
+     "g": "2025",
+     "label": "예산"
+    },
+    {
+     "id": "s25",
+     "g": "2025",
+     "label": "결산",
+     "nochart": true
+    },
+    {
+     "id": "b26",
+     "g": "2026",
+     "label": "예산"
+    },
+    {
+     "id": "r27",
+     "g": "2027",
+     "label": "요구"
+    },
+    {
+     "id": "c1",
+     "g": "2027",
+     "label": "1차 검토"
+    },
+    {
+     "id": "c3",
+     "g": "2027",
+     "label": "3차 검토"
+    },
+    {
+     "id": "c4",
+     "g": "2027",
+     "label": "4차 검토(정부안)"
+    },
+    {
+     "id": "n5",
+     "g": "2027",
+     "label": "국회 확정",
+     "kind": "input"
+    },
+    {
+     "id": "d",
+     "g": "2027",
+     "label": "증감(최종−26)",
+     "kind": "calc",
+     "calc": {
+      "op": "diff",
+      "a": [
+       "n5",
+       "c4"
+      ],
+      "b": [
+       "b26"
+      ]
+     }
+    },
+    {
+     "id": "f28",
+     "g": "2028",
+     "label": "예측",
+     "kind": "forecast",
+     "base": [
+      "n5",
+      "c4"
+     ]
+    },
+    {
+     "id": "r28",
+     "g": "2028",
+     "label": "요구",
+     "kind": "input",
+     "hint": "f28"
+    }
+   ],
+   "rows": [
+    {
+     "id": "r00",
+     "label": "정보시스템 구축 및 운영 (내역)",
+     "level": 0,
+     "sumOf": [
+      "r01",
+      "r13"
+     ],
+     "cells": {
+      "b25": {
+       "v": 1900,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 1899,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 4601,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 2689,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 2031,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 2730,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 2901,
+       "s": "D4"
+      },
+      "n5": {
+       "link": "n27.7121-303"
+      },
+      "r28": {
+       "link": "r28.7121-303"
+      }
+     },
+     "total": true
+    },
+    {
+     "id": "r01",
+     "label": "정보시스템 통합 유지관리",
+     "level": 1,
+     "sumOf": [
+      "r02",
+      "r11"
+     ],
+     "cells": {
+      "b25": {
+       "v": 1900,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 1899,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 1900,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 1689,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 1689,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 2388,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 2388,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r02",
+     "label": "정보시스템 통합 유지관리",
+     "level": 2,
+     "sumOf": [
+      "r03",
+      "r04",
+      "r05",
+      "r06",
+      "r07",
+      "r08",
+      "r09",
+      "r10"
+     ],
+     "cells": {
+      "b25": {
+       "v": 1803,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 1803,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 1803,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 1592,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 1592,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 2291,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 2291,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r03",
+     "label": "인건비 (관리용역비, 210-15)",
+     "level": 3,
+     "cells": {
+      "b25": {
+       "v": 904,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 904,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 904,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 904,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 904,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 954,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 954,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r04",
+     "label": "인건비(비상주) (관리용역비, 210-15)",
+     "level": 3,
+     "cells": {
+      "b25": {
+       "v": 554,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 554,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 554,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 555,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 555,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 726,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 726,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r05",
+     "label": "HW유지관리 (관리용역비, 210-15)",
+     "level": 3,
+     "cells": {
+      "b25": {
+       "v": 20,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 20,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 20,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 20,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 20,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 179,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 179,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r06",
+     "label": "SW 유지관리 (관리용역비, 210-15)",
+     "level": 3,
+     "cells": {
+      "b25": {
+       "v": 60,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 60,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 60,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 60,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 60,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 379,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 379,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r07",
+     "label": "SW 유지관리(백신) (관리용역비, 210-15)",
+     "level": 3,
+     "cells": {
+      "b25": {
+       "v": 57,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 57,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 57,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 57,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 57,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 57,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 57,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r08",
+     "label": "운영비 (관리용역비, 210-15)",
+     "level": 3,
+     "cells": {
+      "b25": {
+       "v": 196,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 196,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 196,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 0,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 0,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r09",
+     "label": "조달수수료 (관리용역비, 210-15)",
+     "level": 3,
+     "cells": {
+      "b25": {
+       "v": 13,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 12,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 13,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 0,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 0,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r10",
+     "label": "단수 조정 (관리용역비, 210-15)",
+     "level": 3,
+     "cells": {
+      "b25": {
+       "v": -1,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": -1,
+       "s": "D1"
+      },
+      "r27": {
+       "v": -4,
+       "s": "D1"
+      },
+      "c1": {
+       "v": -4,
+       "s": "D1"
+      },
+      "c3": {
+       "v": -4,
+       "s": "D3"
+      },
+      "c4": {
+       "v": -4,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r11",
+     "label": "PC 및 SW구매",
+     "level": 2,
+     "sumOf": [
+      "r12"
+     ],
+     "cells": {
+      "b25": {
+       "v": 97,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 96,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 97,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 97,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 97,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 97,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 97,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r12",
+     "label": "PC 및 SW구매 (자산취득비, 430-01)",
+     "level": 3,
+     "cells": {
+      "b25": {
+       "v": 97,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 96,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 97,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 97,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 97,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 97,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 97,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r13",
+     "label": "보안관제센터 운영",
+     "level": 1,
+     "sumOf": [
+      "r14",
+      "r20",
+      "r25",
+      "r29",
+      "r31"
+     ],
+     "cells": {
+      "b25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 2701,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 1000,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 342,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 342,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 513,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r14",
+     "label": "정보보안장비",
+     "level": 2,
+     "sumOf": [
+      "r15",
+      "r16",
+      "r17",
+      "r18",
+      "r19"
+     ],
+     "cells": {
+      "b25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 1436,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 0,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 0,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r15",
+     "label": "정보보안 장비(방화벽) (자산취득비, 430-01)",
+     "level": 3,
+     "cells": {
+      "b25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 180,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 0,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 0,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r16",
+     "label": "정보보안 장비(서버) (자산취득비, 430-01)",
+     "level": 3,
+     "cells": {
+      "b25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 360,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 0,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 0,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r17",
+     "label": "정보보안 장비(웹가시성) (자산취득비, 430-01)",
+     "level": 3,
+     "cells": {
+      "b25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 318,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 0,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 0,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r18",
+     "label": "TMS (자산취득비, 430-01)",
+     "level": 3,
+     "cells": {
+      "b25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 576,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 0,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 0,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r19",
+     "label": "조정 (자산취득비, 430-01)",
+     "level": 3,
+     "cells": {
+      "b25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 2,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 0,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 0,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r20",
+     "label": "관제용역",
+     "level": 2,
+     "sumOf": [
+      "r21",
+      "r22",
+      "r23",
+      "r24"
+     ],
+     "cells": {
+      "b25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 789,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 1000,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 342,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 342,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 513,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r21",
+     "label": "인건비 (일반용역비, 210-14)",
+     "level": 3,
+     "cells": {
+      "b25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 248,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 449,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 248,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 248,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 419,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r22",
+     "label": "제경비 (일반용역비, 210-14)",
+     "level": 3,
+     "cells": {
+      "b25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 347,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 0,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 0,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r23",
+     "label": "기술료 (일반용역비, 210-14)",
+     "level": 3,
+     "cells": {
+      "b25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 94,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 551,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 94,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 94,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 94,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r24",
+     "label": "부가세 (일반용역비, 210-14)",
+     "level": 3,
+     "cells": {
+      "b25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 100,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 0,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 0,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r25",
+     "label": "관제센터 공사",
+     "level": 2,
+     "sumOf": [
+      "r26",
+      "r27",
+      "r28"
+     ],
+     "cells": {
+      "b25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 450,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 0,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 0,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r26",
+     "label": "소방 (공사비)",
+     "level": 3,
+     "cells": {
+      "b25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 150,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 0,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 0,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r27",
+     "label": "전기 (공사비)",
+     "level": 3,
+     "cells": {
+      "b25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 150,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 0,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 0,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r28",
+     "label": "통신 (공사비)",
+     "level": 3,
+     "cells": {
+      "b25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 150,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 0,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 0,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r29",
+     "label": "관제센터 설계",
+     "level": 2,
+     "sumOf": [
+      "r30"
+     ],
+     "cells": {
+      "b25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 13,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 0,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 0,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r30",
+     "label": "설계 (실시설계비)",
+     "level": 3,
+     "cells": {
+      "b25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 13,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 0,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 0,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r31",
+     "label": "관제센터 감리",
+     "level": 2,
+     "sumOf": [
+      "r32"
+     ],
+     "cells": {
+      "b25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 13,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 0,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 0,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r32",
+     "label": "감리 (감리비)",
+     "level": 3,
+     "cells": {
+      "b25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 13,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 0,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 0,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r33",
+     "label": "비목(합계)",
+     "level": 0,
+     "sumOf": [
+      "r34",
+      "r35",
+      "r36",
+      "r37",
+      "r38",
+      "r39"
+     ],
+     "cells": {
+      "b25": {
+       "v": 1900,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 1899,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 4601,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 2689,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 2031,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 2730,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 2901,
+       "s": "D4"
+      },
+      "n5": {
+       "link": "n27.7121-303"
+      },
+      "r28": {
+       "link": "r28.7121-303"
+      }
+     },
+     "total": true,
+     "sep": true
+    },
+    {
+     "id": "r34",
+     "label": "일반용역비(210-14)",
+     "level": 1,
+     "cells": {
+      "b25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 789,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 1000,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 342,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 342,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 513,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r35",
+     "label": "관리용역비(210-15)",
+     "level": 1,
+     "cells": {
+      "b25": {
+       "v": 1803,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 1803,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 1803,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 1592,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 1592,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 2291,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 2291,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r36",
+     "label": "실시설계비(420-02)",
+     "level": 1,
+     "cells": {
+      "b25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 13,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 0,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 0,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r37",
+     "label": "공사비(420-03)",
+     "level": 1,
+     "cells": {
+      "b25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 450,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 0,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 0,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r38",
+     "label": "감리비(420-04)",
+     "level": 1,
+     "cells": {
+      "b25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 0,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 13,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 0,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 0,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 0,
+       "s": "D4"
+      }
+     }
+    },
+    {
+     "id": "r39",
+     "label": "자산취득비(430-01)",
+     "level": 1,
+     "cells": {
+      "b25": {
+       "v": 97,
+       "s": "D1"
+      },
+      "s25": {
+       "v": 96,
+       "s": "D1"
+      },
+      "b26": {
+       "v": 1533,
+       "s": "D1"
+      },
+      "r27": {
+       "v": 97,
+       "s": "D1"
+      },
+      "c1": {
+       "v": 97,
+       "s": "D1"
+      },
+      "c3": {
+       "v": 97,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 97,
+       "s": "D4"
+      }
+     }
+    }
+   ],
+   "focus": "r00"
+  },
+  {
+   "id": "rate",
+   "title": "요구→확정",
+   "desc": "7121-303 연도별 요구 대비 반영률과 2028 예상",
+   "cols": [
+    {
+     "id": "prev",
+     "g": "기준",
+     "label": "전년 예산"
+    },
+    {
+     "id": "rin",
+     "g": "요구",
+     "label": "한도내"
+    },
+    {
+     "id": "rall",
+     "g": "요구",
+     "label": "한도외 포함",
+     "nochart": true
+    },
+    {
+     "id": "c1",
+     "g": "심의",
+     "label": "1차"
+    },
+    {
+     "id": "c2",
+     "g": "심의",
+     "label": "2차"
+    },
+    {
+     "id": "c3",
+     "g": "심의",
+     "label": "3차"
+    },
+    {
+     "id": "c4",
+     "g": "심의",
+     "label": "정부안"
+    },
+    {
+     "id": "fin",
+     "g": "확정",
+     "label": "국회 확정"
+    },
+    {
+     "id": "rt1",
+     "g": "분석",
+     "label": "반영률(확정/요구)",
+     "kind": "calc",
+     "calc": {
+      "op": "pct",
+      "a": [
+       "fin",
+       "c4"
+      ],
+      "b": [
+       "rin"
+      ]
+     }
+    },
+    {
+     "id": "rt2",
+     "g": "분석",
+     "label": "반영률(확정/실요구)",
+     "kind": "calc",
+     "calc": {
+      "op": "pct",
+      "a": [
+       "fin",
+       "c4"
+      ],
+      "b": [
+       "rall"
+      ]
+     }
+    },
+    {
+     "id": "yoy",
+     "g": "분석",
+     "label": "전년 대비",
+     "kind": "calc",
+     "calc": {
+      "op": "growth",
+      "a": [
+       "fin",
+       "c4"
+      ],
+      "b": [
+       "prev"
+      ]
+     }
+    },
+    {
+     "id": "exp",
+     "g": "분석",
+     "label": "예상 확정(요구×평균반영률)",
+     "kind": "calc",
+     "calc": {
+      "op": "expect",
+      "rate": "rt1",
+      "req": "rin",
+      "rows": [
+       "fy25",
+       "fy26",
+       "fy27"
+      ]
+     }
+    }
+   ],
+   "rows": [
+    {
+     "id": "fy25",
+     "label": "2025년 예산",
+     "level": 1,
+     "cells": {
+      "prev": {
+       "v": 2334,
+       "s": "R25a"
+      },
+      "rin": {
+       "v": 2561,
+       "s": "R25a"
+      },
+      "rall": {
+       "v": 14298,
+       "s": "R25a",
+       "n": "한도내 2,561 + 한도외 추가제기 11,737"
+      },
+      "c1": {
+       "v": 577,
+       "s": "R25c1"
+      },
+      "c2": {
+       "v": 1900,
+       "s": "R25c2",
+       "n": "현반영 577 + 추가제기 9,267 중 1,323 검토"
+      },
+      "c3": {
+       "v": null,
+       "n": "3·4차 자료 없음"
+      },
+      "c4": {
+       "v": 1900,
+       "s": "G25",
+       "n": "공통요구자료(정부안) 조정안"
+      },
+      "fin": {
+       "v": 1900,
+       "s": "E25"
+      }
+     }
+    },
+    {
+     "id": "fy26",
+     "label": "2026년 예산",
+     "level": 1,
+     "cells": {
+      "prev": {
+       "v": 1900,
+       "s": "T26in"
+      },
+      "rin": {
+       "v": 5220,
+       "s": "T26in",
+       "n": "1,900 + 3,120 + 100 + 100"
+      },
+      "rall": {
+       "v": 8236,
+       "s": "T26out",
+       "n": "문서 합계칸은 5,886으로 표기. 세부 1,900+5,886+350+100 = 8,236 (합계 오류 후보)",
+       "warn": "문서 합계 5,886 ≠ 세부 합 8,236"
+      },
+      "c1": {
+       "v": null,
+       "n": "2026 심의 차수 결과 자료 미확인"
+      },
+      "c2": {
+       "v": null
+      },
+      "c3": {
+       "v": null
+      },
+      "c4": {
+       "v": null
+      },
+      "fin": {
+       "v": 4601,
+       "s": "D4",
+       "n": "27년 돈표의 26예산(본예산)"
+      }
+     }
+    },
+    {
+     "id": "fy27",
+     "label": "2027년 예산",
+     "level": 1,
+     "cells": {
+      "prev": {
+       "v": 4601,
+       "s": "D4"
+      },
+      "rin": {
+       "v": 2689,
+       "s": "A1"
+      },
+      "rall": {
+       "v": 3764,
+       "s": "A1"
+      },
+      "c1": {
+       "v": 2031,
+       "s": "D1"
+      },
+      "c2": {
+       "v": 2031,
+       "s": "A3",
+       "n": "3차심의자료 현반영"
+      },
+      "c3": {
+       "v": 2730,
+       "s": "D3"
+      },
+      "c4": {
+       "v": 2901,
+       "s": "D4"
+      },
+      "fin": {
+       "link": "n27.7121-303"
+      }
+     }
+    },
+    {
+     "id": "fy28",
+     "label": "2028년 예산 (편성 중)",
+     "level": 1,
+     "cells": {
+      "prev": {
+       "ref": [
+        "fy27",
+        "fin",
+        "c4"
+       ]
+      },
+      "rin": {
+       "link": "r28.7121-303"
+      },
+      "rall": {
+       "link": "r28all.7121-303"
+      },
+      "c1": {
+       "link": "c28_1"
+      },
+      "c2": {
+       "link": "c28_2"
+      },
+      "c3": {
+       "link": "c28_3"
+      },
+      "c4": {
+       "link": "c28_4"
+      },
+      "fin": {
+       "link": "n28.7121-303"
+      }
+     }
+    }
+   ],
+   "focus": "fy27",
+   "inputRows": [
+    "fy28"
+   ]
+  },
+  {
+   "id": "settle",
+   "title": "결산·집행",
+   "desc": "연도별 예산현액·집행·이월·불용",
+   "cols": [
+    {
+     "id": "b",
+     "g": "예산",
+     "label": "예산액"
+    },
+    {
+     "id": "x",
+     "g": "예산",
+     "label": "이월·예비비"
+    },
+    {
+     "id": "h",
+     "g": "예산",
+     "label": "예산현액"
+    },
+    {
+     "id": "e",
+     "g": "집행",
+     "label": "집행액"
+    },
+    {
+     "id": "cf",
+     "g": "집행",
+     "label": "차년 이월",
+     "nochart": true
+    },
+    {
+     "id": "u",
+     "g": "집행",
+     "label": "불용액",
+     "nochart": true
+    },
+    {
+     "id": "er",
+     "g": "분석",
+     "label": "집행률(집행/현액)",
+     "kind": "calc",
+     "calc": {
+      "op": "pct",
+      "a": [
+       "e"
+      ],
+      "b": [
+       "h"
+      ]
+     }
+    },
+    {
+     "id": "chk",
+     "g": "분석",
+     "label": "검산(현액−집행−이월−불용)",
+     "kind": "calc",
+     "calc": {
+      "op": "check",
+      "h": "h",
+      "minus": [
+       "e",
+       "cf",
+       "u"
+      ]
+     }
+    }
+   ],
+   "rows": [
+    {
+     "id": "h7",
+     "label": "7121-303 정보시스템 구축 및 운영",
+     "level": 0,
+     "header": true,
+     "cells": {}
+    },
+    {
+     "id": "7_23",
+     "label": "2023",
+     "level": 1,
+     "cells": {
+      "b": {
+       "v": 0,
+       "s": "A1"
+      },
+      "x": {
+       "v": 1543,
+       "s": "A1",
+       "n": "예비비 1,543"
+      },
+      "h": {
+       "v": 1543,
+       "s": "A1"
+      },
+      "e": {
+       "v": 1326,
+       "s": "A1"
+      },
+      "cf": {
+       "v": 0,
+       "s": "A1"
+      },
+      "u": {
+       "v": 216,
+       "s": "A1",
+       "n": "25년 공통요구자료(Ⅱ-1)에는 217로 표기"
+      }
+     }
+    },
+    {
+     "id": "7_24",
+     "label": "2024",
+     "level": 1,
+     "cells": {
+      "b": {
+       "v": 2334,
+       "s": "A1"
+      },
+      "x": {
+       "v": 0,
+       "s": "A1"
+      },
+      "h": {
+       "v": 2334,
+       "s": "A1"
+      },
+      "e": {
+       "v": 2287,
+       "s": "A1"
+      },
+      "cf": {
+       "v": 0,
+       "s": "A1"
+      },
+      "u": {
+       "v": 47,
+       "s": "A1"
+      }
+     }
+    },
+    {
+     "id": "7_25",
+     "label": "2025",
+     "level": 1,
+     "cells": {
+      "b": {
+       "v": 1900,
+       "s": "A1"
+      },
+      "x": {
+       "v": 0,
+       "s": "A1"
+      },
+      "h": {
+       "v": 1900,
+       "s": "A1"
+      },
+      "e": {
+       "v": 1899,
+       "s": "A1"
+      },
+      "cf": {
+       "v": 0,
+       "s": "A1"
+      },
+      "u": {
+       "v": 1,
+       "s": "A1"
+      }
+     }
+    },
+    {
+     "id": "7_26",
+     "label": "2026 (7월말)",
+     "level": 1,
+     "cells": {
+      "b": {
+       "v": 4601,
+       "s": "G7"
+      },
+      "x": {
+       "v": 0,
+       "s": "G7"
+      },
+      "h": {
+       "v": 4601,
+       "s": "G7"
+      },
+      "e": {
+       "v": 2531,
+       "s": "G7"
+      },
+      "cf": {
+       "v": null,
+       "s": "G7"
+      },
+      "u": {
+       "v": null,
+       "s": "G7"
+      }
+     },
+     "inprog": true
+    },
+    {
+     "id": "h5",
+     "label": "5036-302 온라인 영사민원 시스템 구축 및 운영",
+     "level": 0,
+     "header": true,
+     "cells": {}
+    },
+    {
+     "id": "5_23",
+     "label": "2023",
+     "level": 1,
+     "cells": {
+      "b": {
+       "v": 8364,
+       "s": "G5"
+      },
+      "x": {
+       "v": 116,
+       "s": "G5",
+       "n": "예비비 116"
+      },
+      "h": {
+       "v": 8480,
+       "s": "G5"
+      },
+      "e": {
+       "v": 7638,
+       "s": "G5"
+      },
+      "cf": {
+       "v": 671,
+       "s": "G5"
+      },
+      "u": {
+       "v": 171,
+       "s": "G5"
+      }
+     }
+    },
+    {
+     "id": "5_24",
+     "label": "2024",
+     "level": 1,
+     "cells": {
+      "b": {
+       "v": 11657,
+       "s": "G5"
+      },
+      "x": {
+       "v": 671,
+       "s": "G5",
+       "n": "전년 이월 671"
+      },
+      "h": {
+       "v": 12328,
+       "s": "G5"
+      },
+      "e": {
+       "v": 11751,
+       "s": "G5"
+      },
+      "cf": {
+       "v": 0,
+       "s": "G5"
+      },
+      "u": {
+       "v": 577,
+       "s": "G5"
+      }
+     }
+    },
+    {
+     "id": "5_25",
+     "label": "2025",
+     "level": 1,
+     "cells": {
+      "b": {
+       "v": 6253,
+       "s": "G5"
+      },
+      "x": {
+       "v": 0,
+       "s": "G5"
+      },
+      "h": {
+       "v": 6253,
+       "s": "G5"
+      },
+      "e": {
+       "v": 6186,
+       "s": "G5"
+      },
+      "cf": {
+       "v": 0,
+       "s": "G5"
+      },
+      "u": {
+       "v": 96,
+       "s": "G5",
+       "n": "현액−집행=67. 문서 불용액 96과 29 차이(출연금 실집행 불용 29 포함 표기로 추정, 확인 필요)"
+      }
+     }
+    },
+    {
+     "id": "5_26",
+     "label": "2026 (7월말)",
+     "level": 1,
+     "cells": {
+      "b": {
+       "v": 6358,
+       "s": "G5"
+      },
+      "x": {
+       "v": 0,
+       "s": "G5"
+      },
+      "h": {
+       "v": 6358,
+       "s": "G5"
+      },
+      "e": {
+       "v": 3500,
+       "s": "G5"
+      },
+      "cf": {
+       "v": null,
+       "s": "G5"
+      },
+      "u": {
+       "v": null,
+       "s": "G5"
+      }
+     },
+     "inprog": true
+    }
+   ],
+   "focus": "7_25"
+  }
+ ]
+}
+;</script>
+<script>
+/* 정보화예산 숫자판 — 외부 라이브러리 없음. 서버 모드(/api/flow)와 단독 미리보기(window.__FLOW__) 겸용 */
+(function () {
+  'use strict';
+  const $ = (s) => document.querySelector(s);
+  let L = null, inputs = {}, settings = { method: 'growth', growth: 5 };
+  let standalone = false, csrf = null, dirty = false, memo = {};
+  let saving = false, autoSaveSeconds = 60, lastSavedAt = null, saveError = '';
+  const LOCAL_KEY = 'oka_budget_flow_v1', LOCAL_HISTORY_KEY = 'oka_budget_flow_history_v1';
+  const cur = { sheet: 0, r: 0, c: 0, ar: 0, ac: 0 };
+  let dragging = false, editing = null;
+
+  const fmt = (v) => (v == null ? '' : (v < 0 ? '△' : '') + Math.abs(Math.round(v)).toLocaleString('ko-KR'));
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]));
+  const letter = (i) => { let s = ''; i += 1; while (i > 0) { const m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26); } return s; };
+  const BLANK = { v: null, t: 'blank' };
+
+  function prep(sh) {
+    if (sh._by) return sh;
+    sh._by = {}; sh.rows.forEach((r) => { sh._by[r.id] = r; });
+    sh._col = {}; sh.cols.forEach((c) => { sh._col[c.id] = c; });
+    return sh;
+  }
+  const sheet = () => prep(L.sheets[cur.sheet]);
+  const keyOf = (sh, row, col) => { const cell = row.cells && row.cells[col.id]; return (cell && cell.link) || sh.id + '.' + row.id + '.' + col.id; };
+  function isInput(sh, row, col) {
+    if (row.memo || row.header) return false;
+    const cell = row.cells && row.cells[col.id];
+    if (cell && cell.link && cell.v == null) return true;
+    return col.kind === 'input';
+  }
+
+  /* ---------- 계산 ---------- */
+  function ev(sh, row, col) {
+    const k = sh.id + '|' + row.id + '|' + col.id;
+    if (memo[k]) return memo[k];
+    memo[k] = BLANK;
+    return (memo[k] = compute(sh, row, col));
+  }
+  function first(sh, row, ids) {
+    for (const id of ids) { const x = ev(sh, row, sh._col[id]); if (x.v != null) return x.v; }
+    return null;
+  }
+  function kids(sh, row, col) {
+    let sum = 0, n = 0, miss = 0;
+    for (const id of row.sumOf) { const x = ev(sh, sh._by[id], col); if (x.v != null) { sum += x.v; n++; } else miss++; }
+    return { sum, n, miss };
+  }
+  function compute(sh, row, col) {
+    const cell = (row.cells && row.cells[col.id]) || null;
+    if (row.header) return BLANK;
+    if (cell && cell.ref) return { v: first(sh, sh._by[cell.ref[0]], cell.ref.slice(1)), t: 'calc', note: '2027 최종값(국회 확정, 없으면 정부안)' };
+    if (col.kind === 'calc') return calc(sh, row, col);
+    if (col.kind === 'forecast') return forecast(sh, row, col);
+    if (isInput(sh, row, col)) {
+      if (row.sumOf) {
+        const ch = kids(sh, row, col);
+        if (ch.n > 0 && ch.miss === 0) {
+          const tot = cell && cell.link ? inputs[cell.link] : null;
+          return { v: ch.sum, t: 'input', ro: true, dv: true, note: '하위 입력값 합계', warn: tot != null && tot !== ch.sum ? '다른 표에 입력한 총액 ' + fmt(tot) + ' ≠ 이 표의 하위 합계 ' + fmt(ch.sum) : null };
+        }
+        if (ch.n > 0) return { v: null, t: 'input', ro: true, hint: ch.sum, warn: '하위 ' + ch.miss + '건 미입력 — 흐린 숫자는 입력된 칸만 더한 부분 합계' };
+      }
+      const v = inputs[keyOf(sh, row, col)];
+      if (v != null) return { v, t: 'input' };
+      if (col.hint) { const h = ev(sh, row, sh._col[col.hint]); if (h.v != null) return { v: null, t: 'input', hint: h.v }; }
+      return { v: null, t: 'input' };
+    }
+    if (cell && cell.v != null) {
+      const o = { v: cell.v, t: 'fact', s: cell.s, note: cell.n, warn: cell.warn };
+      if (row.sumOf) { const ch = kids(sh, row, col); if (ch.miss === 0 && ch.n > 0 && ch.sum !== cell.v) o.warn = '문서 값 ' + fmt(cell.v) + ' ≠ 하위 합 ' + fmt(ch.sum); }
+      return o;
+    }
+    if (row.sumOf) {
+      const ch = kids(sh, row, col);
+      if (ch.n > 0) return { v: ch.sum, t: 'fact', dv: true, note: '하위 행 합계(계산값)', warn: ch.miss ? '미확인 ' + ch.miss + '건이 합계에서 빠져 있음' : null };
+    }
+    if (row.memo) return BLANK;
+    return { v: null, t: 'na', note: cell && cell.n };
+  }
+  function calc(sh, row, col) {
+    const c = col.calc;
+    if (row.memo) return BLANK;
+    const A = c.a ? first(sh, row, c.a) : null, B = c.b ? first(sh, row, c.b) : null;
+    if (c.op === 'diff') return A == null || B == null ? BLANK : { v: A - B, t: 'calc' };
+    if (c.op === 'add') return A == null && B == null ? BLANK : { v: (A || 0) + (B || 0), t: 'calc' };
+    if (c.op === 'pct') return A == null || !B ? BLANK : { v: (A / B) * 100, t: 'calc', pct: true };
+    if (c.op === 'growth') return A == null || !B ? BLANK : { v: ((A - B) / B) * 100, t: 'calc', pct: true };
+    if (c.op === 'check') {
+      const h = first(sh, row, [c.h]); const parts = c.minus.map((id) => first(sh, row, [id]));
+      if (h == null || parts.some((x) => x == null)) return BLANK;
+      const v = h - parts.reduce((a, b) => a + b, 0);
+      return { v, t: 'calc', check: true, warn: v !== 0 ? '예산현액 − 집행 − 이월 − 불용 = ' + fmt(v) + ' (0이어야 함)' : null };
+    }
+    if (c.op === 'expect') {
+      if (!(sh.inputRows || []).includes(row.id)) return BLANK;
+      const rates = c.rows.map((id) => ev(sh, sh._by[id], sh._col[c.rate]).v).filter((x) => x != null);
+      if (!rates.length) return BLANK;
+      const avg = rates.reduce((a, b) => a + b, 0) / rates.length;
+      const req = first(sh, row, [c.req]);
+      const note = '최근 ' + rates.length + '개 연도 평균 반영률 ' + avg.toFixed(1) + '% 적용';
+      return req == null ? { v: null, t: 'blank', note } : { v: Math.round((req * avg) / 100), t: 'fc', note };
+    }
+    return BLANK;
+  }
+  function forecast(sh, row, col) {
+    if (row.memo) return BLANK;
+    if (row.sumOf) { const ch = kids(sh, row, col); if (ch.n > 0) return { v: ch.sum, t: 'fc', note: '하위 예측 합계' }; }
+    const base = first(sh, row, col.base);
+    if (base == null) return BLANK;
+    const g = Number(settings.growth) || 0, m = settings.method;
+    let v = null, how = '';
+    if (m === 'flat') { v = base; how = '2027 최종값 동결'; }
+    else if (m === 'mid' && col.mid) { const x = ev(sh, row, sh._col[col.mid]).v; if (x != null) { v = x; how = '중기계획 요구액 그대로'; } }
+    else if (m === 'trend' && col.hist) {
+      const hs = col.hist.map((id) => ev(sh, row, sh._col[id]).v);
+      const i = hs.findIndex((x) => x != null && x > 0);
+      if (i >= 0 && base > 0) { const r = Math.pow(base / hs[i], 1 / (hs.length - i)) - 1; v = base * (1 + r); how = '최근 예산 연평균 ' + (r * 100).toFixed(1) + '% 연장'; }
+    }
+    if (v == null) { v = base * (1 + g / 100); how = '2027 최종값 × (1 + ' + g + '%)'; }
+    return { v: Math.round(v), t: 'fc', note: '예측: ' + how + ' · 기준 ' + fmt(base) };
+  }
+  function show(x, col) {
+    if (x.t === 'na') return '미확인';
+    if (x.v == null) return x.hint != null ? (x.hint === 0 ? '-' : fmt(x.hint)) : '';
+    if (x.pct) return (x.v < 0 ? '△' : '') + Math.abs(x.v).toFixed(1) + '%';
+    if (x.check) return x.v === 0 ? '일치' : fmt(x.v);
+    if (x.v === 0) return '-';
+    return fmt(x.v);
+  }
+
+  /* ---------- 표 그리기 ---------- */
+  function render() {
+    memo = {};
+    const sh = sheet();
+    let h = '<table class="g"><thead><tr class="l"><th class="rn"></th><th class="nm">A</th>';
+    sh.cols.forEach((c, i) => { h += '<th>' + letter(i + 1) + '</th>'; });
+    h += '</tr><tr class="gr"><th class="rn"></th><th class="nm"></th>';
+    for (let i = 0; i < sh.cols.length;) {
+      let j = i; while (j < sh.cols.length && sh.cols[j].g === sh.cols[i].g) j++;
+      h += '<th class="gs" colspan="' + (j - i) + '">' + esc(sh.cols[i].g) + '</th>'; i = j;
+    }
+    h += '</tr><tr class="lb"><th class="rn"></th><th class="nm">' + esc(sh.desc || '') + '</th>';
+    sh.cols.forEach((c, i) => {
+      const gs = i === 0 || sh.cols[i - 1].g !== c.g;
+      h += '<th class="' + (gs ? 'gs ' : '') + (c.kind === 'input' ? 'in' : c.kind === 'forecast' ? 'fc' : '') + '">' + esc(c.label) + '</th>';
+    });
+    h += '</tr></thead><tbody>';
+    sh.rows.forEach((row, r) => {
+      const cls = ['lv' + (row.level || 0)];
+      if (row.total) cls.push('tot'); else if (row.sumOf && row.level === 0) cls.push('sum');
+      if (row.memo) cls.push('memo'); if (row.header) cls.push('hd'); if (row.sep) cls.push('sep');
+      const labelParts = String(row.label || '').split(' · ');
+      const labelHtml = labelParts.length > 1
+        ? '<span class="main-label">' + esc(labelParts[0]) + '</span><span class="sub-label">' + esc(labelParts.slice(1).join(' · ')) + '</span>'
+        : '<span class="main-label">' + esc(row.label) + '</span>';
+      h += '<tr class="' + cls.join(' ') + '" data-r="' + r + '"><th class="rn">' + (r + 1) + '</th><th class="nm" title="' + esc(row.label) + '">' +
+        (row.code ? '<span class="cd">' + esc(row.code) + '</span>' : '') + labelHtml + '</th>';
+      sh.cols.forEach((col, c) => {
+        const x = ev(sh, row, col), k = [];
+        if (c === 0 || sh.cols[c - 1].g !== col.g) k.push('gs');
+        if (x.t === 'na') k.push('na');
+        if (x.t === 'input') { k.push('in'); if (x.ro) k.push('ro'); if (x.v == null && x.hint != null) k.push('hint'); }
+        if (x.t === 'fc') k.push('fc'); if (x.t === 'calc') k.push('calc');
+        if (x.dv) k.push('dv'); if (x.v != null && x.v < 0) k.push('neg');
+        if (x.warn) k.push('warn'); else if (x.note) k.push('note');
+        h += '<td class="' + k.join(' ') + '" data-r="' + r + '" data-c="' + c + '">' + esc(show(x, col)) + '</td>';
+      });
+      h += '</tr>';
+    });
+    $('#wrap').innerHTML = h + '</tbody></table>';
+    $('#desc').textContent = sh.note || '';
+    paint();
+  }
+  const tdAt = (r, c) => $('#wrap td[data-r="' + r + '"][data-c="' + c + '"]');
+  function range() {
+    return { r0: Math.min(cur.r, cur.ar), r1: Math.max(cur.r, cur.ar), c0: Math.min(cur.c, cur.ac), c1: Math.max(cur.c, cur.ac) };
+  }
+  function paint() {
+    const sh = sheet(), g = range();
+    document.querySelectorAll('#wrap td.selr,#wrap td.cur').forEach((e) => e.classList.remove('selr', 'cur'));
+    document.querySelectorAll('#wrap tr.focus').forEach((e) => e.classList.remove('focus'));
+    let sum = 0, n = 0;
+    for (let r = g.r0; r <= g.r1; r++) for (let c = g.c0; c <= g.c1; c++) {
+      const td = tdAt(r, c); if (!td) continue;
+      if (g.r0 !== g.r1 || g.c0 !== g.c1) td.classList.add('selr');
+      const x = ev(sh, sh.rows[r], sh.cols[c]);
+      if (x.v != null && !x.pct && !x.check) { sum += x.v; n++; }
+    }
+    const td = tdAt(cur.r, cur.c);
+    if (td) { td.classList.add('cur'); td.parentNode.classList.add('focus'); }
+    $('#stat').textContent = n > 1 ? '합계 ' + fmt(sum) + ' · 평균 ' + fmt(sum / n) + ' · 개수 ' + n : '';
+    bar(); strip();
+  }
+  function colName(col) { return (col.g ? col.g + ' ' : '') + col.label; }
+  function bar() {
+    const sh = sheet(), row = sh.rows[cur.r], col = sh.cols[cur.c], x = ev(sh, row, col);
+    $('#fxref').textContent = letter(cur.c + 1) + (cur.r + 1);
+    $('#fxval').textContent = show(x, col) || (x.t === 'input' ? '(입력)' : '');
+    let s = '<b>' + esc((row.code ? row.code + ' ' : '') + row.label) + ' · ' + esc(colName(col)) + '</b>';
+    if (x.warn) s += ' · <span class="w">⚠ ' + esc(x.warn) + '</span>';
+    if (x.t === 'input' && !x.ro) s += ' · 직접 입력 칸' + (x.hint != null ? ' (흐린 숫자는 예측값, 아직 입력 전)' : '');
+    if (x.s && L.sources[x.s]) { const o = L.sources[x.s]; s += ' · 출처: ' + esc(o.zip) + ' » ' + esc(o.file) + ' [' + esc(o.where) + ']'; }
+    if (x.note) s += ' · ' + esc(x.note);
+    if (x.t === 'na' && !x.note) s += ' · 원본에서 값을 확인하지 못함';
+    $('#fxsrc').innerHTML = s; $('#fxsrc').title = $('#fxsrc').textContent;
+  }
+  function strip() {
+    const sh = sheet(); let row = sh.rows[cur.r];
+    if (row.header || row.memo) row = sh._by[sh.focus] || row;
+    const cols = sh.cols.filter((c) => !c.nochart && c.kind !== 'calc');
+    const pts = cols.map((c) => ({ c, x: ev(sh, row, c) }));
+    const vals = pts.map((p) => (p.x.v != null ? p.x.v : p.x.hint != null && !p.x.ro ? p.x.hint : null));
+    const max = Math.max(1, ...vals.filter((v) => v != null).map(Math.abs));
+    const W = 80, H = 112, top = 16, base = 76;
+    let svg = '<svg width="' + (pts.length * W + 8) + '" height="' + H + '" role="img" aria-label="선택 행 흐름">';
+    svg += '<line x1="0" x2="' + pts.length * W + '" y1="' + base + '" y2="' + base + '" stroke="var(--grid)"/>';
+    let prev = null;
+    pts.forEach((p, i) => {
+      const v = vals[i], x0 = i * W + 14, bw = W - 28, isCur = p.c === sh.cols[cur.c];
+      if (v != null) {
+        const hgt = Math.max(1, (Math.abs(v) / max) * (base - top - 4));
+        const fill = p.x.t === 'fc' || (p.x.t === 'input' && p.x.v == null) ? 'var(--fc)' : p.x.t === 'input' ? 'var(--input-line)' : 'var(--ledger)';
+        const op = p.x.t === 'fc' || p.x.v == null ? '.45' : '1';
+        svg += '<rect x="' + x0 + '" y="' + (base - hgt) + '" width="' + bw + '" height="' + hgt + '" fill="' + fill + '" opacity="' + op + '"' + (isCur ? ' stroke="var(--ink)" stroke-width="2"' : '') + '/>';
+        svg += '<text x="' + (x0 + bw / 2) + '" y="' + (base - hgt - 4) + '" text-anchor="middle" font-size="11" font-weight="600" fill="var(--ink)">' + fmt(v) + '</text>';
+        if (prev != null && prev !== 0 && v !== prev) {
+          const d = v - prev;
+          svg += '<text x="' + (x0 - 14) + '" y="' + (base + 36) + '" text-anchor="middle" font-size="10" fill="' + (d < 0 ? 'var(--down)' : 'var(--muted)') + '">' + (d > 0 ? '+' : '') + fmt(d).replace('△', '−') + '</text>';
+        }
+        prev = v;
+      } else {
+        svg += '<text x="' + (x0 + bw / 2) + '" y="' + (base - 6) + '" text-anchor="middle" font-size="10" fill="var(--muted)">' + (p.x.t === 'na' ? '미확인' : '·') + '</text>';
+      }
+      svg += '<text x="' + (x0 + bw / 2) + '" y="' + (base + 13) + '" text-anchor="middle" font-size="10.5" fill="var(--muted)">' + esc(p.c.g || '') + '</text>';
+      svg += '<text x="' + (x0 + bw / 2) + '" y="' + (base + 25) + '" text-anchor="middle" font-size="10.5" fill="var(--ink)">' + esc(p.c.label.replace(/\(.*\)/, '')) + '</text>';
+    });
+    $('#chart').innerHTML = svg + '</svg>';
+    const col = sh.cols[cur.c], x = ev(sh, sh.rows[cur.r], col);
+    const i = cols.indexOf(col); let chg = '';
+    if (i > 0 && vals[i] != null && sh.rows[cur.r] === row) {
+      let j = i - 1; while (j >= 0 && vals[j] == null) j--;
+      if (j >= 0) { const d = vals[i] - vals[j]; chg = '<span class="chg ' + (d < 0 ? 'neg' : '') + '">' + esc(colName(cols[j])) + ' 대비 ' + (d > 0 ? '+' : '') + fmt(d) + (vals[j] ? ' (' + (d < 0 ? '△' : '') + Math.abs((d / vals[j]) * 100).toFixed(1) + '%)' : '') + '</span>'; }
+    }
+    $('#who').innerHTML = '<small>' + esc(sh.title) + ' · ' + (cur.r + 1) + '행</small><b>' + esc((row.code ? row.code + ' ' : '') + row.label) + '</b>' +
+      '<span class="big">' + esc(show(x, col) || (x.hint != null ? fmt(x.hint) : '–')) + '</span><small>' + esc(colName(col)) + '</small>' + chg;
+  }
+  function tabs() {
+    $('#tabs').innerHTML = L.sheets.map((s, i) => '<button class="tab' + (i === cur.sheet ? ' on' : '') + '" data-i="' + i + '">' + esc(s.title) + '</button>').join('');
+  }
+  function go(i) {
+    cur.sheet = i; const sh = sheet();
+    const fr = Math.max(0, sh.rows.findIndex((r) => r.id === sh.focus));
+    cur.r = cur.ar = fr; cur.c = cur.ac = Math.max(0, sh.cols.findIndex((c) => c.kind === 'input') - 1);
+    tabs(); render(); $('#wrap').scrollTop = 0;
+  }
+
+  /* ---------- 입력 ---------- */
+  function relink(sh) {
+    memo = {};
+    sh.rows.forEach((row) => {
+      if (!row.sumOf) return;
+      sh.cols.forEach((col) => {
+        const cell = row.cells && row.cells[col.id];
+        if (!cell || !cell.link || !isInput(sh, row, col)) return;
+        const ch = kids(sh, row, col);
+        if (ch.n > 0 && ch.miss === 0) inputs[cell.link] = ch.sum;
+      });
+    });
+    memo = {};
+  }
+  function setCell(r, c, v) {
+    const sh = sheet(), row = sh.rows[r], col = sh.cols[c];
+    if (!isInput(sh, row, col)) return false;
+    memo = {};
+    if (ev(sh, row, col).ro) return false;
+    const k = keyOf(sh, row, col);
+    if (v == null) delete inputs[k]; else inputs[k] = v;
+    return true;
+  }
+  function markDirty() {
+    if (!dirty) autoSaveSeconds = 60;
+    dirty = true; saveError = ''; badge(); updateSaveStatus();
+  }
+  function changed() { relink(sheet()); markDirty(); render(); }
+  function parse(s) {
+    s = String(s).trim().replace(/,/g, '').replace(/^△/, '-').replace(/^−/, '-');
+    if (s === '') return null;
+    const n = Number(s);
+    return isFinite(n) ? n : undefined;
+  }
+  function edit(initial) {
+    const sh = sheet(), row = sh.rows[cur.r], col = sh.cols[cur.c], x = ev(sh, row, col);
+    if (!isInput(sh, row, col)) { toast('이 칸은 원본에서 가져온 값입니다. 노란 칸만 입력할 수 있습니다.'); return; }
+    if (x.ro) { toast('하위 항목 합계로 계산되는 칸입니다. 하위 항목을 고치세요.'); return; }
+    const td = tdAt(cur.r, cur.c), inp = document.createElement('input');
+    inp.value = initial != null ? initial : x.v != null ? String(x.v) : '';
+    inp.setAttribute('inputmode', 'decimal'); inp.setAttribute('aria-label', '금액 입력');
+    td.appendChild(inp); inp.focus(); if (initial == null) inp.select();
+    editing = { inp, r: cur.r, c: cur.c };
+    const done = (ok, dr) => {
+      if (!editing) return; const e = editing; editing = null;
+      if (ok) {
+        const v = parse(inp.value);
+        if (v === undefined) { toast('숫자만 입력할 수 있습니다.'); render(); $('#wrap').focus(); return; }
+        setCell(e.r, e.c, v); if (dr) move(dr, 0, false); changed();
+      } else render();
+      $('#wrap').focus();
+    };
+    inp.addEventListener('keydown', (ev2) => {
+      if (ev2.key === 'Enter') { ev2.preventDefault(); done(true, 1); }
+      else if (ev2.key === 'Tab') { ev2.preventDefault(); done(true, 0); move(0, ev2.shiftKey ? -1 : 1, false); paint(); }
+      else if (ev2.key === 'Escape') { ev2.preventDefault(); done(false); }
+      ev2.stopPropagation();
+    });
+    inp.addEventListener('blur', () => done(true, 0));
+  }
+  function move(dr, dc, ext) {
+    const sh = sheet();
+    cur.r = Math.max(0, Math.min(sh.rows.length - 1, cur.r + dr));
+    cur.c = Math.max(0, Math.min(sh.cols.length - 1, cur.c + dc));
+    if (!ext) { cur.ar = cur.r; cur.ac = cur.c; }
+    const td = tdAt(cur.r, cur.c); if (td && td.scrollIntoView) td.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }
+  function tsv(all, sep, raw) {
+    const sh = sheet(), g = all ? { r0: 0, r1: sh.rows.length - 1, c0: 0, c1: sh.cols.length - 1 } : range();
+    const q = (s) => (sep === ',' && /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s);
+    const out = [];
+    if (all) out.push(['코드', '항목'].concat(sh.cols.map(colName)).map(q).join(sep));
+    for (let r = g.r0; r <= g.r1; r++) {
+      const row = sh.rows[r], line = all ? [row.code || '', row.label] : [];
+      for (let c = g.c0; c <= g.c1; c++) {
+        const x = ev(sh, row, sh.cols[c]);
+        let s = x.t === 'na' ? '미확인' : x.v == null ? '' : x.pct ? x.v.toFixed(1) + '%' : raw ? String(Math.round(x.v)) : Math.round(x.v).toLocaleString('en-US');
+        line.push(s);
+      }
+      out.push(line.map(q).join(sep));
+    }
+    return out.join('\n');
+  }
+  function copy(text) {
+    const done = () => toast('복사했습니다. 엑셀·한글 표에 붙여넣으세요.');
+    const fallback = () => { const t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); done(); } catch (e) { toast('복사하지 못했습니다.'); } t.remove(); $('#wrap').focus(); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
+  }
+  let tt = 0;
+  function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('on'), 2600); }
+  function badge() {
+    const b = $('#mode');
+    b.className = 'badge' + (dirty ? ' dirty' : '');
+    b.textContent = standalone ? (dirty ? '미리보기 · 입력값은 저장되지 않음' : '미리보기') : dirty ? '저장 안 된 입력 있음' : '저장됨';
+  }
+  function hms(d) {
+    const p = (n) => String(n).padStart(2, '0');
+    return p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+  }
+  function clockText(value) {
+    if (!value) return '없음';
+    const d = value instanceof Date ? value : new Date(value);
+    return Number.isNaN(d.getTime()) ? String(value).slice(11, 19) : hms(d);
+  }
+  function updateSaveStatus() {
+    const el = $('#saveStatus'); if (!el) return;
+    const now = hms(new Date());
+    el.className = 'save-status' + (saveError ? ' error' : dirty ? ' dirty' : '');
+    if (standalone && !dirty) { el.textContent = '현재 ' + now + ' · 브라우저 저장 · 마지막 ' + clockText(lastSavedAt); return; }
+    if (saving) { el.textContent = '현재 ' + now + ' · 저장 중…'; return; }
+    if (saveError) { el.textContent = '현재 ' + now + ' · 저장 실패 · 1분 후 재시도'; return; }
+    const next = dirty ? String(Math.max(0, autoSaveSeconds)).padStart(2, '0') + '초 후' : '대기';
+    el.textContent = '현재 ' + now + ' · 자동저장 ' + next + ' · 마지막 ' + clockText(lastSavedAt);
+  }
+  function startAutoSave() {
+    updateSaveStatus();
+    window.setInterval(() => {
+      if (dirty && !saving) {
+        autoSaveSeconds -= 1;
+        if (autoSaveSeconds <= 0) save('auto');
+      }
+      updateSaveStatus();
+    }, 1000);
+  }
+
+  function overview(matrix, dashboard) {
+    const summary = (matrix && matrix.summary) || {};
+    const current = summary['4차'] || {};
+    const fifth = summary['5차(국회)'] || {};
+    const next = summary['2028요구'] || {};
+    const put = (id, value) => { const el = $(id); if (el && value != null) el.textContent = Number(value).toLocaleString('ko-KR'); };
+    put('#ovCurrent', current.total);
+    put('#ovFifth', fifth.missing);
+    put('#ovNext', next.missing);
+    put('#ovFindings', dashboard && dashboard.open_findings);
+  }
+
+  function revealOverview() {
+    const el = $('[data-reveal]');
+    if (!el) return;
+    if (matchMedia('(prefers-reduced-motion:reduce)').matches) { el.classList.add('show'); return; }
+    requestAnimationFrame(() => el.classList.add('show'));
+  }
+
+  /* ---------- 이벤트 ---------- */
+  function bind() {
+    const wrap = $('#wrap');
+    wrap.addEventListener('mousedown', (e) => {
+      const td = e.target.closest('td'); if (!td || e.target.tagName === 'INPUT') return;
+      cur.r = +td.dataset.r; cur.c = +td.dataset.c;
+      if (!e.shiftKey) { cur.ar = cur.r; cur.ac = cur.c; }
+      dragging = true; paint();
+    });
+    wrap.addEventListener('mouseover', (e) => {
+      if (!dragging) return; const td = e.target.closest('td'); if (!td) return;
+      cur.r = +td.dataset.r; cur.c = +td.dataset.c; paint();
+    });
+    document.addEventListener('mouseup', () => { dragging = false; });
+    wrap.addEventListener('dblclick', (e) => { if (e.target.closest('td')) edit(); });
+    wrap.addEventListener('keydown', (e) => {
+      if (editing) return;
+      const k = e.key, arrows = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] };
+      if (arrows[k]) { e.preventDefault(); move(arrows[k][0], arrows[k][1], e.shiftKey); paint(); }
+      else if (k === 'Tab') { e.preventDefault(); move(0, e.shiftKey ? -1 : 1, false); paint(); }
+      else if (k === 'Enter' || k === 'F2') { e.preventDefault(); edit(); }
+      else if (k === 'Delete' || k === 'Backspace') {
+        e.preventDefault(); const g = range(); let any = false;
+        for (let r = g.r0; r <= g.r1; r++) for (let c = g.c0; c <= g.c1; c++) any = setCell(r, c, null) || any;
+        if (any) changed();
+      }
+      else if ((e.ctrlKey || e.metaKey) && (k === 'c' || k === 'C')) { e.preventDefault(); copy(tsv(false, '\t')); }
+      else if (!e.ctrlKey && !e.metaKey && !e.altKey && /^[0-9\-]$/.test(k)) { e.preventDefault(); edit(k); }
+    });
+    $('#tabs').addEventListener('click', (e) => { const b = e.target.closest('.tab'); if (b) { go(+b.dataset.i); wrap.focus(); } });
+    $('#method').addEventListener('change', (e) => { settings.method = e.target.value; markDirty(); render(); });
+    $('#growth').addEventListener('input', (e) => { settings.growth = Number(e.target.value) || 0; markDirty(); render(); });
+    $('#copy').addEventListener('click', () => { const g = range(); copy(tsv(g.r0 === g.r1 && g.c0 === g.c1, '\t')); });
+    $('#csv').addEventListener('click', () => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob(['\ufeff' + tsv(true, ',', true)], { type: 'text/csv;charset=utf-8' }));
+      a.download = '정보화예산_' + sheet().title.replace(/[^\w가-힣]+/g, '_') + '.csv'; document.body.appendChild(a); a.click(); a.remove();
+    });
+    $('#fill').addEventListener('click', () => {
+      let n = 0; memo = {};
+      L.sheets.forEach((s) => {
+        const sh = prep(s);
+        sh.cols.filter((c) => c.kind === 'input' && c.hint).forEach((col) => sh.rows.forEach((row) => {
+          if (row.sumOf || !isInput(sh, row, col)) return; const x = ev(sh, row, col);
+          if (x.ro || x.v != null || x.hint == null) return;
+          inputs[keyOf(sh, row, col)] = x.hint; n++;
+        }));
+      });
+      L.sheets.forEach((s) => relink(prep(s)));
+      if (n) { markDirty(); render(); toast('비어 있던 2028 요구 ' + n + '칸에 예측값을 넣었습니다. 노란 칸에서 고칠 수 있습니다.'); }
+      else toast('채울 빈 칸이 없습니다.');
+    });
+    $('#save').addEventListener('click', () => save('manual'));
+    window.addEventListener('beforeunload', (e) => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+  }
+  async function save(source) {
+    if (saving || (!dirty && source === 'auto')) return;
+    const button = $('#save'); saving = true; saveError = ''; button.classList.add('saving'); button.textContent = '저장 중…'; updateSaveStatus();
+    try {
+      let d;
+      if (standalone) {
+        const now = new Date().toISOString();
+        let history = [];
+        try { history = JSON.parse(localStorage.getItem(LOCAL_HISTORY_KEY) || '[]'); } catch (e) { history = []; }
+        history.push({ at: now, inputs: Object.assign({}, inputs), settings: Object.assign({}, settings) });
+        if (history.length > 100) history = history.slice(-100);
+        localStorage.setItem(LOCAL_KEY, JSON.stringify({ inputs, settings, saved_at: now }));
+        localStorage.setItem(LOCAL_HISTORY_KEY, JSON.stringify(history));
+        d = { saved_at: now };
+      } else {
+        const res = await fetch('/api/flow', { method: 'PUT', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrf || '' }, body: JSON.stringify({ inputs, settings }) });
+        d = await res.json(); if (!res.ok) throw new Error(d.error || '저장 실패');
+      }
+      dirty = false; lastSavedAt = d.saved_at || new Date(); autoSaveSeconds = 60; badge();
+      button.classList.remove('saving'); button.classList.add('done'); button.textContent = '✓ 저장 완료';
+      window.setTimeout(() => { button.classList.remove('done'); button.textContent = '입력값 저장'; }, 1200);
+      if (source !== 'auto') toast('입력값을 저장했습니다.');
+    } catch (err) {
+      saveError = err.message; autoSaveSeconds = 60; button.classList.remove('saving'); button.textContent = '입력값 저장';
+      toast('저장하지 못했습니다: ' + err.message);
+    } finally { saving = false; updateSaveStatus(); }
+  }
+  async function boot() {
+    let saved = {};
+    try {
+      if (window.__FLOW__) {
+        standalone = true; L = window.__FLOW__; $('#back').style.display = 'none';
+        try {
+          const local = JSON.parse(localStorage.getItem(LOCAL_KEY) || '{}');
+          inputs = local.inputs || {}; saved = local.settings || {}; lastSavedAt = local.saved_at || null;
+        } catch (e) { inputs = {}; saved = {}; }
+      }
+      else {
+        const me = await (await fetch('/api/me', { credentials: 'same-origin' })).json(); csrf = me.csrf;
+        const res = await fetch('/api/flow', { credentials: 'same-origin' }); const d = await res.json();
+        if (!res.ok) throw new Error(d.error || '자료를 불러오지 못했습니다');
+        L = d.ledger; inputs = d.inputs || {}; saved = d.settings || {}; lastSavedAt = d.saved_at || null;
+        const extra = await Promise.allSettled([
+          fetch('/api/budget-matrix', { credentials: 'same-origin' }).then((r) => r.json()),
+          fetch('/api/dashboard', { credentials: 'same-origin' }).then((r) => r.json())
+        ]);
+        overview(extra[0].status === 'fulfilled' ? extra[0].value : null, extra[1].status === 'fulfilled' ? extra[1].value : null);
+      }
+      settings = Object.assign(settings, L.defaults ? { method: L.defaults.method, growth: L.defaults.growth } : {}, saved);
+      $('#method').value = settings.method; $('#growth').value = settings.growth;
+      $('#growth').title = (L.defaults && L.defaults.growthNote) || '';
+      bind(); badge(); go(0); revealOverview(); startAutoSave(); $('#wrap').focus();
+    } catch (err) {
+      $('#wrap').innerHTML = '<p style="padding:20px">숫자판을 열지 못했습니다: ' + esc(err.message) + '<br>로그인이 필요하면 <a href="/index.html">승인·근거 화면</a>에서 로그인한 뒤 다시 여세요.</p>';
+    }
+  }
+  boot();
+})();
+
+</script>
+</body>
+</html>
