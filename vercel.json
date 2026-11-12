@@ -4,6 +4,12 @@
   "outputDirectory": "public",
   "cleanUrls": true,
   "redirects": [
+    { "source": "/web", "destination": "/", "permanent": false },
+    { "source": "/web/index", "destination": "/", "permanent": false },
+    { "source": "/web/assign", "destination": "/", "permanent": false },
+    { "source": "/web/dept", "destination": "/", "permanent": false },
+    { "source": "/web/collect", "destination": "/", "permanent": false },
+    { "source": "/web/chat", "destination": "/", "permanent": false },
     { "source": "/web/index.html", "destination": "/", "permanent": false },
     { "source": "/web/assign.html", "destination": "/", "permanent": false },
     { "source": "/web/dept.html", "destination": "/", "permanent": false },
