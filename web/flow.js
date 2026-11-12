@@ -103,7 +103,7 @@
       const actorDepartment = clean(request.actorDepartment, 120);
       if (!assignedDepartments(item).includes(actorDepartment)) fail(403, "배분된 담당 과만 회신할 수 있습니다.");
       if (item.status === "보완요청" && !item.supplements?.[actorDepartment]) fail(403, "보완을 요청받은 과만 다시 회신할 수 있습니다.");
-      if (request.templateId !== OFFICIAL_ANSWER_TEMPLATE) fail(400, "0000청 공식 답변양식만 사용할 수 있습니다.");
+      if (request.templateId !== OFFICIAL_ANSWER_TEMPLATE) fail(400, "재외동포청 공식 답변양식만 사용할 수 있습니다.");
       const memo = clean(request.memo, 12000);
       const fileName = clean(request.fileName, 300);
       if (!memo && !fileName) fail(400, "회신 메모 또는 회신 파일이 필요합니다.");

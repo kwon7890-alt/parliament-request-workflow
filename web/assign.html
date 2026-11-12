@@ -2,15 +2,15 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="dark"><meta name="theme-color" content="#050607">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light"><meta name="theme-color" content="#f3f7f5">
   <title>국회 요구자료 배분</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23132a46%22/><path d=%22M18 18h28v28H18z%22 fill=%22none%22 stroke=%22white%22 stroke-width=%224%22/><path d=%22M24 27h16M24 35h16%22 stroke=%22white%22 stroke-width=%224%22/></svg>">
   <link rel="stylesheet" href="s6.css"><link rel="stylesheet" href="assign.css"><link rel="stylesheet" href="ai-dark.css">
 </head>
 <body>
-  <header class="topbar"><a class="brand" href="index.html"><span class="brand-mark">AI</span><span class="brand-copy"><b>0000청</b><small>국회의정지원 AI</small></span></a><nav class="nav" aria-label="주요 화면"><a href="index.html">외통위 현황</a><span class="current" aria-current="page">접수·배분</span><a href="dept.html">현업 회신</a><a href="collect.html">취합</a><a href="chat.html">AI 안내</a></nav></header>
+  <header class="topbar"><a class="brand" href="index.html"><span class="brand-mark">OKA</span><span class="brand-copy"><b>재외동포청</b><small>국회의정지원 업무관리</small></span></a><nav class="nav" aria-label="주요 화면"><a href="index.html">업무 현황</a><span class="current" aria-current="page">접수·배분</span><a href="dept.html">현업 회신</a><a href="collect.html">취합·검토</a><a href="chat.html">AI 안내</a></nav></header>
   <main>
-    <section class="hero" data-reveal><div><p class="eyebrow">외교통일위원회 · ASSIGNMENT DESK</p><h1>접수하고, 근거를 보고,<br>소관 과를 확정합니다</h1><p class="lead">PDF 또는 검증된 문항목록 CSV를 불러오면 문항별 후보 3순위를 계산합니다. 최종 주관·협조 과는 0000청 국회 총괄 담당자가 확인합니다.</p></div><div class="stats"><div class="stat"><b id="totalCount">0</b><span>전체 문항</span></div><div class="stat"><b id="receivedCount">0</b><span>접수</span></div><div class="stat"><b id="assignedCount">0</b><span>배분확정</span></div></div></section>
+    <section class="hero" data-reveal><div><p class="eyebrow">외교통일위원회 · 접수·배분</p><h1>문항을 접수하고<br>소관 부서를 확정합니다</h1><p class="lead">PDF·CSV·엑셀을 문항 단위로 읽고 규칙 근거가 있는 후보 3개를 제시합니다. 최종 주관·협조 부서는 국회 총괄 담당자가 확인합니다.</p></div><div class="stats"><div class="stat"><b id="totalCount">0</b><span>전체 문항</span></div><div class="stat"><b id="receivedCount">0</b><span>배분 필요</span></div><div class="stat"><b id="assignedCount">0</b><span>배분확정</span></div></div></section>
     <section class="flow-strip" data-reveal aria-label="처리 단계"><div class="flow-step active"><b>1</b>접수</div><div class="flow-step active"><b>2</b>문항 분해</div><div class="flow-step active"><b>3</b>AI 후보 추천</div><div class="flow-step active"><b>4</b>사람 확인</div><div class="flow-step"><b>5</b>부서 회신</div></section>
 
     <section class="panel" data-reveal>
@@ -150,7 +150,7 @@
       const workbook = XLSX.utils.book_new();
       const sheet = XLSX.utils.json_to_sheet(rows);
       XLSX.utils.book_append_sheet(workbook, sheet, "처리현황");
-      XLSX.writeFile(workbook, "0000청_외통위_요구자료_처리현황.xlsx");
+      XLSX.writeFile(workbook, "재외동포청_국회_요구자료_처리현황.xlsx");
       notice(`처리 현황 ${rows.length}건을 엑셀로 저장했습니다.`);
     });
     $("#caseRows").addEventListener("click", async (event) => {
@@ -189,7 +189,8 @@
 
     function resetEverything() {
       if (!confirm("접수·배분 기록과 현재 선택 파일을 모두 초기화할까요?")) return;
-      ApiClient.clear();
+      try { ApiClient.clear(); }
+      catch (error) { notice("공유 서버 기록은 이 화면에서 초기화할 수 없습니다. 로컬 선택 파일만 비웁니다.", true); }
       staging = [];
       $("#pdfFiles").value = "";
       $("#csvFile").value = "";
@@ -198,7 +199,7 @@
       $("#splitSummary").innerHTML = "";
       $("#register").disabled = true;
       progress(0, false);
-      notice("접수·배분 기록과 선택 파일을 모두 초기화했습니다.");
+      if (ApiClient.mode === "브라우저 저장") notice("접수·배분 기록과 선택 파일을 모두 초기화했습니다.");
       renderCases();
     }
     $("#resetAll").addEventListener("click", resetEverything);
@@ -221,8 +222,14 @@
       if (requestedStatus === "received") $("#statusFilter").value = "접수";
       if (requestedStatus === "assigned") $("#statusFilter").value = "배분확정";
       $("#storageMode").textContent = ApiClient.mode;
+      if (ApiClient.mode !== "브라우저 저장") {
+        $("#resetAll").textContent = "선택 파일 비우기";
+        $("#resetCases").textContent = "공유 기록 보호 중";
+        $("#resetCases").disabled = true;
+        $("#resetCases").title = "공유 서버 기록은 관리자 절차로만 초기화할 수 있습니다.";
+      }
       await renderCases();
-    } catch (error) { notice(`초기화 실패: ${error.message}. 로컬 서버로 열었는지 확인하세요.`, true); }
+    } catch (error) { notice(`초기화 실패: ${error.message}`, true); AppShell.showError("배분 기준 자료를 읽지 못했습니다.",{detail:error.message}); }
   </script><script src="ai-dark.js"></script>
 </body>
 </html>

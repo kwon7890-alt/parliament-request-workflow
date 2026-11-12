@@ -13,6 +13,6 @@
     "test:chat": "node test_chat.js",
     "test:s8": "node test_validate.js && node test_api.js",
     "test:bridge": "node test_bridge.js",
-    "test:ui": "node test_ai_dark_browser.js"
+    "test:ui": "node test_ui_light.js"
   }
 }
